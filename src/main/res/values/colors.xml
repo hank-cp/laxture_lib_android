@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_dialog_body">#F5F5F5</color>
+    <color name="bg_dialog_header">#43ADBB</color>
+
+    <color name="dialog_tablist_divider">#33B5E5</color>
+    <color name="dialog_list_title">#2E2E2E</color>
+    <color name="dialog_background">#F5F5F5</color>
+    <color name="dialog_bottom_bar">#EBEBEB</color>
+</resources>

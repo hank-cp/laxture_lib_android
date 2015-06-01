@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="AsyncImageView">
+        <attr name="loadingDrawable" format="reference" />
+        <attr name="failedDrawable" format="reference" />
+        <attr name="boundWidth" format="dimension" />
+        <attr name="boundHeight" format="dimension" />
+        <attr name="density">
+            <flag name="nochange" value="-0x1"/>
+            <flag name="middle" value="0x0" />
+            <flag name="high" value="0x1" />
+            <flag name="xhigh" value="0x2" />
+        </attr>
+        <attr name="progressView" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="DateTimePicker">
+        <attr name="textSize" format="dimension"/>
+    </declare-styleable>
+
+    <declare-styleable name="NavBar">
+        <attr name="leftBtnLabel" format="string" />
+        <attr name="rightBtnLabel" format="string" />
+    </declare-styleable>
+
+    <!--手势密码相关-->
+    <declare-styleable name="PatternLockView">
+        <!-- Aspect to use when drawing LockPatternView. Choices are "square"(default), "lock_width"
+             or "lock_height" -->
+        <attr name="aspect" format="string"/>
+    </declare-styleable>
+
+    <!-- Defines the custom XML attributes supported for a HorizontalListView -->
+    <declare-styleable name="HorizontalListView">
+        <attr name="dividerWidth" format="dimension" />
+        <attr name="android:divider" />
+        <attr name="android:requiresFadingEdge" />
+        <attr name="android:fadingEdgeLength" />
+    </declare-styleable>
+
+
+    <!-- GridLayout Compact -->
+    <declare-styleable name="ViewGroup_MarginLayout">
+        <attr name="android:layout_margin" />
+        <attr name="android:layout_marginLeft" />
+        <attr name="android:layout_marginTop" />
+        <attr name="android:layout_marginRight" />
+        <attr name="android:layout_marginBottom" />
+    </declare-styleable>
+
+    <attr name="alignmentMode">
+        <enum name="alignBounds" value="0" />
+        <enum name="alignMargins" value="1" />
+    </attr>
+
+    <declare-styleable name="GridLayout">
+        <attr name="android:orientation" />
+        <attr name="rowCount" format="integer" />
+        <attr name="columnCount" format="integer" />
+        <attr name="useDefaultMargins" format="boolean" />
+        <attr name="alignmentMode" />
+        <attr name="rowOrderPreserved" format="boolean" />
+        <attr name="columnOrderPreserved" format="boolean" />
+        <attr name="defaultGap" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="GridLayout_Layout">
+        <attr name="layout_row" format="integer" />
+        <attr name="layout_rowSpan" format="integer" min="1" />
+        <attr name="android:layout_column" />
+        <attr name="layout_columnSpan" format="integer" min="1" />
+        <attr name="android:layout_gravity" />
+    </declare-styleable>
+
+    <!-- Dialog Style -->
+    <declare-styleable name="CommonTheme.AlertDialogTheme.Button">
+        <attr name="positiveButtonBackground" format="reference"/>
+        <attr name="positiveButtonTextColor" format="color"/>
+    </declare-styleable>
+
+</resources>

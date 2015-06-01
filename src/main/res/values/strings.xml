@@ -1,0 +1,47 @@
+<resources>
+    <string name="app_name">Laxture Lib</string>
+
+    <string name="label_refresh">刷新</string>
+    <string name="label_ok">确定</string>
+    <string name="label_cancel">取消</string>
+    <string name="label_save">保存</string>
+    <string name="label_yes">是</string>
+    <string name="label_no">否</string>
+    <string name="label_submit">提交</string>
+    <string name="label_confirm">确认</string>
+    <string name="label_reply">回复</string>
+    <string name="label_delete">删除</string>
+    <string name="label_back">返回</string>
+    <string name="label_new">新建</string>
+    <string name="label_done">完成</string>
+    <string name="label_setting">设置</string>
+    <string name="label_edit">编辑</string>
+    <string name="label_copy">复制</string>
+    <string name="label_favorite">收藏</string>
+    <string name="label_send">发送</string>
+    <string name="label_close">关闭</string>
+    <string name="label_open">开启</string>
+
+    <string name="msg_cannotFoundPhoto">添加照片失败，请从相册中选择</string>
+    <string name="msg_notSupportOperation">无法完成操作</string>
+    <string name="msg_loading">请稍候…</string>
+
+    <!-- HTTP error message -->
+    <string name="msg_http_err_network_not_available">无网络</string>
+    <string name="msg_http_err_connection_error">网络不给力</string>
+    <string name="msg_http_err_connection_time_out">网络不给力</string>
+    <string name="msg_http_err_server_error">连接异常，请稍候再试</string>
+    <string name="msg_http_err_download_error">下载失败，请稍候再试</string>
+    <string name="msg_http_err_save_download_error">下载失败，磁盘空间不足</string>
+
+    <string name="cancel">取消</string>
+    <string name="set">设置</string>
+
+    <!-- 手势解锁相关 -->
+    <string name="lockscreen_access_pattern_start">Pattern started</string>
+    <string name="lockscreen_access_pattern_cleared">Pattern cleared</string>
+    <string name="lockscreen_access_pattern_cell_added">Cell added</string>
+    <string name="lockscreen_access_pattern_detected">Pattern completed</string>
+    <!--end-->
+
+</resources>
