@@ -37,21 +37,20 @@ public class ContentStorage implements Storage, Serializable {
         this.url = url;
     }
 
+    protected String preCheckCacheKey(String key) {
+        return key;
+    }
+
     public File getLocalFile() {
         File file = null;
         String key = url;
 
-        // 从本地上传的ContentStorage应该都带有localPath, 而且上传成功后返回的url
-        // 是不带尺寸参数的. 为了从LruCache找出localPath, 需要先把尺寸参数去掉.
-        if (null != url && ResourceUtil.isUppImage(url))
-            key = url.substring(0, url.length() - 3);
+        key = preCheckCacheKey(key);
 
         // 不同来源生成的ContentStorage, 可能url是相同的, 但不一定都有localPath.
         // 如果localPath为空, 尝试找出有url的localPath.
         if (Checker.isEmpty(localPath)) {
-
-            //图片来源不是http://group.store.qq.com/*不需查找本地文件
-            if (Checker.isEmpty(url) || !ResourceUtil.isUppImage(url)) return null;
+            if (Checker.isEmpty(url)) return null;
 
             //从LruCache里面找
             file = !Checker.isEmpty(getFromCache(key))
@@ -60,12 +59,6 @@ public class ContentStorage implements Storage, Serializable {
             //LruCache找不到, 所有规格的图片都先从无规格图片的缓存路径查找图片
             if (Checker.isEmpty(file))
                 file = new HashCacheStorage(key).getFile();
-
-            //无规格图片缓存路径没有图片的情况下,200大小的图需要寻找400大小的图片
-            if (Checker.isEmpty(file) && url.endsWith("/" + ResourceUtil.UPP_SIZE_WIDTH_MEDIUM)) {
-                file = new HashCacheStorage(key + ResourceUtil.UPP_SIZE_WIDTH_LARGE).getFile();
-            }
-
 
         } else {
              //有localPath的情况：直接获取本地文件
