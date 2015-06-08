@@ -7,7 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
-import com.laxture.lib.Configuration;
+import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.util.LLog;
 
 public class SafeBitmapDrawable extends BitmapDrawable {
@@ -15,7 +15,7 @@ public class SafeBitmapDrawable extends BitmapDrawable {
     protected SafeBitmapDrawableFactory mDrawableFactory;
 
     public SafeBitmapDrawable(Bitmap bitmap) {
-        super(Configuration.getResources(), bitmap);
+        super(RuntimeContext.getResources(), bitmap);
     }
 
     protected void guaranteeBitmapIsSafe() {

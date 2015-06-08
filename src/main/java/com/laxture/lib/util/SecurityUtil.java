@@ -11,7 +11,7 @@ import javax.crypto.spec.DESKeySpec;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.laxture.lib.Configuration;
+import com.laxture.lib.RuntimeContext;
 
 public class SecurityUtil {
 
@@ -28,10 +28,10 @@ public class SecurityUtil {
     private static void prepareXorKey() {
         if (sXORKey != null) return;
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(
-                Configuration.getApplicationContext());
+                RuntimeContext.getApplication());
         String secKey = pref.getString(SECURITY_KEY, null); //纯碎为兼容以前版本
         if (secKey == null || secKey.length() < XOR_KEY_MIN_LENGTH) {
-            secKey = DeviceUtil.getIMEICode(Configuration.getApplicationContext());
+            secKey = DeviceUtil.getIMEICode(RuntimeContext.getApplication());
             pref.edit().putString(SECURITY_KEY, secKey).commit();
         }
         sXORKey = secKey.toCharArray();

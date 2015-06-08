@@ -1,6 +1,6 @@
 package com.laxture.lib.util;
 
-import com.laxture.lib.Configuration;
+import com.laxture.lib.RuntimeContext;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,8 +33,7 @@ public class PinYinHelper {
             sMapRef = new SoftReference<HashMap<String,String>>(map);
             InputStream is = null;
             try {
-                is = Configuration.getInstance().getAppContext()
-                        .getResources().getAssets().open("pinyin/unicode_to_hanyu_pinyin.txt");
+                is = RuntimeContext.getResources().getAssets().open("pinyin/unicode_to_hanyu_pinyin.txt");
                 BufferedReader breader = new BufferedReader(new InputStreamReader(is));
                 String line;
                 while ((line = breader.readLine()) != null && line.length()>0) {

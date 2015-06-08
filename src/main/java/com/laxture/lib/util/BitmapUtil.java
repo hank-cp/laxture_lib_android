@@ -23,7 +23,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 
 import com.laxture.lib.BuildConfig;
-import com.laxture.lib.Configuration;
+import com.laxture.lib.RuntimeContext;
 
 public final class BitmapUtil {
 
@@ -111,7 +111,7 @@ public final class BitmapUtil {
         Bitmap newbmp = Bitmap.createBitmap(oldbmp, 0, 0, width, height, matrix, true);
         oldbmp.recycle();
         // 把bitmap转换成drawable并返回
-        return new BitmapDrawable(Configuration.getResources(), newbmp);
+        return new BitmapDrawable(RuntimeContext.getResources(), newbmp);
     }
 
     public static Bitmap drawableToBitmap(Drawable drawable) {

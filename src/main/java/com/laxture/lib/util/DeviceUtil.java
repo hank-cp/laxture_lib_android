@@ -83,7 +83,7 @@ public class DeviceUtil {
                 Method mIsLayoutSizeAtLeast = con.getClass().getMethod(
                         "isLayoutSizeAtLeast", int.class);
                 boolean r = (Boolean) mIsLayoutSizeAtLeast.invoke(con,
-                        0x04); //Configuration.SCREENLAYOUT_SIZE_XLARGE
+                        0x04); //RuntimeContext.SCREENLAYOUT_SIZE_XLARGE
                 return r;
             } catch (Exception ex) {
                 LLog.i("OS version not support tablet.");

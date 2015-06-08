@@ -1,6 +1,6 @@
 package com.laxture.lib.cache.storage;
 
-import com.laxture.lib.Configuration;
+import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.util.FileUtil;
 
 import java.io.File;
@@ -17,13 +17,13 @@ public class TempStorage extends RandomStorage {
 
     @Override
     protected File getStorageHome() {
-        File cacheHome = new File(Configuration.getInstance().getStorageHome(), ".tmp");
+        File cacheHome = new File(RuntimeContext.getStorageHome(), ".tmp");
         if (!cacheHome.exists()) cacheHome.mkdirs();
         return cacheHome;
     }
 
     public static void cleanTempFolder() {
-        FileUtil.deleteFolder(new File(Configuration.getInstance().getStorageHome(), ".tmp"));
+        FileUtil.deleteFolder(new File(RuntimeContext.getStorageHome(), ".tmp"));
     }
 
 }

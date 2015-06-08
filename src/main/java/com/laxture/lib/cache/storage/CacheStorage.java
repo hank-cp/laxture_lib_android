@@ -1,6 +1,6 @@
 package com.laxture.lib.cache.storage;
 
-import com.laxture.lib.Configuration;
+import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.util.Checker;
 
 import java.io.File;
@@ -26,7 +26,7 @@ public class CacheStorage implements Storage {
     }
 
     protected File getCacheHome() {
-        File cacheHome = new File(Configuration.getInstance().getStorageHome(), ".cache");
+        File cacheHome = new File(RuntimeContext.getStorageHome(), ".cache");
         if (!cacheHome.exists()) cacheHome.mkdirs();
         return cacheHome;
     }

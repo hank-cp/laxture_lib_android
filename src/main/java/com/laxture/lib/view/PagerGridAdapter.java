@@ -8,7 +8,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 
-import com.laxture.lib.Configuration;
+import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.R;
 import com.laxture.lib.util.ViewUtil;
 
@@ -110,7 +110,7 @@ public abstract class PagerGridAdapter<T> extends PagerAdapter {
     //*************************************************************************
 
     public ViewGroup createPageContentView(int columnCount, int page) {
-        GridView gridView = new GridView(Configuration.getApplicationContext());
+        GridView gridView = new GridView(RuntimeContext.getApplication());
         gridView.setGravity(Gravity.CENTER);
         gridView.setNumColumns(columnCount);
         gridView.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);

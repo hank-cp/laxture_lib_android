@@ -4,7 +4,7 @@ import java.util.concurrent.CountDownLatch;
 
 import android.widget.Toast;
 
-import com.laxture.lib.test.Configuration;
+import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.task.AbstractAsyncTask;
 import com.laxture.lib.task.TaskException;
 import com.laxture.lib.task.TaskListener;
@@ -58,13 +58,11 @@ public abstract class SimulatorTask extends AbstractAsyncTask<String> {
 
     public class DefaultSimulatorCallback implements TaskListener<String> {
 
-        private Configuration mConf = Configuration.getInstance();
-
         @Override
         public void onTaskStart() {
             started = true;
             LLog.v("Simulator Task Start");
-            Toast.makeText(mConf.getAppContext(),
+            Toast.makeText(RuntimeContext.getApplication(),
                     "onTaskStart", Toast.LENGTH_SHORT).show();
         }
 
@@ -73,7 +71,7 @@ public abstract class SimulatorTask extends AbstractAsyncTask<String> {
             SimulatorTask.this.totalSize = totalSize;
             SimulatorTask.this.currentSize = currentSize;
             LLog.v("Simulator Task Progress Updated");
-            Toast.makeText(mConf.getAppContext(),
+            Toast.makeText(RuntimeContext.getApplication(),
                     "onTaskProgressUpdated :"+totalSize+"/"+currentSize,
                     Toast.LENGTH_SHORT).show();
         }
@@ -82,7 +80,7 @@ public abstract class SimulatorTask extends AbstractAsyncTask<String> {
         public void onTaskFinished(String result) {
             finished = true;
             LLog.v("Simulator Task Finished");
-            Toast.makeText(mConf.getAppContext(),
+            Toast.makeText(RuntimeContext.getApplication(),
                     "onTaskFinished : "+result, Toast.LENGTH_SHORT).show();
             if (testThreadLatch != null) testThreadLatch.countDown();
         }
@@ -91,7 +89,7 @@ public abstract class SimulatorTask extends AbstractAsyncTask<String> {
         public void onTaskCancelled(String result) {
             cancelled = true;
             LLog.v("Simulator Task Cancelled");
-            Toast.makeText(mConf.getAppContext(),
+            Toast.makeText(RuntimeContext.getApplication(),
                     "onTaskCancelled : "+result, Toast.LENGTH_SHORT).show();
             if (testThreadLatch != null) testThreadLatch.countDown();
         }
@@ -100,7 +98,7 @@ public abstract class SimulatorTask extends AbstractAsyncTask<String> {
         public void onTaskFailed(String result, TaskException ex) {
             failed = true;
             LLog.v("Simulator Task Failed");
-            Toast.makeText(mConf.getAppContext(),
+            Toast.makeText(RuntimeContext.getApplication(),
                     "onTaskFailed : "+result+"/"+ex.getErrorCode()+"/"+ex.getMessage(),
                     Toast.LENGTH_SHORT).show();
             if (testThreadLatch != null) testThreadLatch.countDown();

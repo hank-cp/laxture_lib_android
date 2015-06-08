@@ -11,7 +11,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.text.format.Time;
 
-import com.laxture.lib.Configuration;
+import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.util.DateUtil;
 import com.laxture.lib.util.FileUtil;
 import com.laxture.lib.util.LLog;
@@ -129,9 +129,9 @@ public class StorageCacheManageThread extends Thread {
 //                startTime, new OnClockListener() {
 //                    @Override
 //                    public boolean onClockArrived(Clock sender) {
-//                        clearStorageCache(Configuration.getInstance().getCacheFolderCapacity());
+//                        clearStorageCache(RuntimeContext.getInstance().getCacheFolderCapacity());
 //                        // 首次清理缓存后设置清理时间间隔
-//                        sender.setInterval(Configuration.getInstance().getCacheClearIntervalTime());
+//                        sender.setInterval(RuntimeContext.getInstance().getCacheClearIntervalTime());
 //                        return true;
 //                    }
 //                });
@@ -150,14 +150,14 @@ public class StorageCacheManageThread extends Thread {
         long startTime = System.currentTimeMillis();
         LLog.i("Start to clear cacheStorage at Time " + new Date(startTime));
         
-        WakeLocker.acquire(Configuration.getInstance().getAppContext(), false);
+        WakeLocker.acquire(RuntimeContext.getApplication(), false);
         long cacheSize = 0;
         long clearSize = 0;
         List<StorageCacheRecord> cacheRecordList =
                 StorageCacheRecord.getCacheStorageOrderByLastUsed();
 
         List<File> cacheFiles = FileUtil.listFiles(
-                new File(Configuration.getInstance().getStorageHome(), ".cache"));
+                new File(RuntimeContext.getStorageHome(), ".cache"));
 
         Map<String, String> pathUrlMap = new HashMap<String, String>();
 

@@ -1,6 +1,6 @@
 package com.laxture.lib.cache.storage;
 
-import com.laxture.lib.Configuration;
+import com.laxture.lib.RuntimeContext;
 
 import java.io.File;
 
@@ -16,7 +16,7 @@ public class UploadStorage extends RandomStorage {
 
     @Override
     protected File getStorageHome() {
-        File cacheHome = new File(Configuration.getInstance().getStorageHome(), ".upload");
+        File cacheHome = new File(RuntimeContext.getStorageHome(), ".upload");
         if (!cacheHome.exists()) cacheHome.mkdirs();
         return cacheHome;
     }

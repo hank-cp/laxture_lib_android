@@ -16,7 +16,7 @@ import android.support.v4.app.Fragment;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
-import com.laxture.lib.Configuration;
+import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.R;
 
 import java.io.File;
@@ -239,7 +239,7 @@ public class IntentUtil {
                     context.getContentResolver(), Settings.Secure.INSTALL_NON_MARKET_APPS);
             if (allowUnknowSource == 1) return false;
 
-            return Configuration.getInstance().getPackageName().equals(
+            return RuntimeContext.getPackageName().equals(
                     context.getPackageManager().getInstallerPackageName(PACKAGE_NAME_MARKET));
         } catch (Exception e) {
             return false;

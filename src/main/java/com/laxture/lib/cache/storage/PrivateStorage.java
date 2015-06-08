@@ -1,6 +1,6 @@
 package com.laxture.lib.cache.storage;
 
-import com.laxture.lib.Configuration;
+import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.util.Checker;
 
 import java.io.File;
@@ -29,7 +29,7 @@ public class PrivateStorage implements Storage {
     }
 
     protected File getPrivateHome(String uin) {
-        return new File(Configuration.getInstance().getAppContext().getFilesDir(), uin);
+        return new File(RuntimeContext.getApplication().getFilesDir(), uin);
     }
 
 }

@@ -1,6 +1,6 @@
 package com.laxture.lib.util;
 
-import com.laxture.lib.Configuration;
+import com.laxture.lib.RuntimeContext;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,7 +11,7 @@ public class AssetLoader {
         if (Checker.isEmpty(assetPath)) return null;
         InputStream is = null;
         try {
-            is = Configuration.getInstance().getAppContext().getAssets().open(assetPath);
+            is = RuntimeContext.getApplication().getAssets().open(assetPath);
             return is;
         } catch (IOException e) {
             LLog.e("Failed to read file %s", assetPath, e);
@@ -65,7 +65,7 @@ public class AssetLoader {
 
     public static String[] listFiles(String assetPath) {
         try {
-            return Configuration.getInstance().getAppContext().getAssets().list(assetPath);
+            return RuntimeContext.getApplication().getAssets().list(assetPath);
         } catch (IOException e) {
             LLog.e("Failed to read file %s", assetPath, e);
             return null;

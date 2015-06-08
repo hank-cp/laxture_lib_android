@@ -4,7 +4,7 @@ import java.io.File;
 
 import android.graphics.Bitmap;
 
-import com.laxture.lib.Configuration;
+import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.util.BitmapUtil;
 import com.laxture.lib.util.LLog;
 
@@ -194,7 +194,7 @@ public class BitmapCache {
             return bitmap;
         }
 
-        bitmap = BitmapUtil.loadBitmapFromResources(Configuration.getResources(), resId);
+        bitmap = BitmapUtil.loadBitmapFromResources(RuntimeContext.getResources(), resId);
         if (bitmap != null) put(cacheKey, bitmap);
         return bitmap;
     }

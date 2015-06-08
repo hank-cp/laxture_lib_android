@@ -243,7 +243,7 @@ public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
         } else {
             // unknow error, shouldn't reach here
             setErrorDetails(new HttpTaskException(
-                    HttpTaskException.HTTP_ERR_CODE_UNKNOW_ERROR));
+                    HttpTaskException.HTTP_ERR_CODE_UNKNOWN_ERROR));
         }
 
         return null;

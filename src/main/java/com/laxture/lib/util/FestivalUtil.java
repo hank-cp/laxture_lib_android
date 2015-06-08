@@ -12,7 +12,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import android.content.Context;
 import android.util.Log;
 
-import com.laxture.lib.Configuration;
+import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.R;
 
 public class FestivalUtil {
@@ -30,7 +30,7 @@ public class FestivalUtil {
         if (null == mFestivalDictionary) {
             mFestivalDictionary = new FestivalUtil();
             try {
-                mFestivalDictionary.parse(Configuration.getInstance().getAppContext(), R.xml.festival);
+                mFestivalDictionary.parse(RuntimeContext.getApplication(), R.xml.festival);
             } catch (XmlPullParserException e) {
                 e.printStackTrace();
                 mFestivalDictionary = null;

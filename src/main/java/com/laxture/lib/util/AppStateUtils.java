@@ -13,7 +13,7 @@ import android.content.SharedPreferences;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
 
-import com.laxture.lib.Configuration;
+import com.laxture.lib.RuntimeContext;
 
 public class AppStateUtils {
 
@@ -28,7 +28,7 @@ public class AppStateUtils {
      */
     public static boolean isAppInBackground() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(
-                Configuration.getApplicationContext());
+                RuntimeContext.getApplication());
         return sp.getBoolean(PREF_KEY_APP_TO_BACKGROUND, false);
     }
 
@@ -68,7 +68,7 @@ public class AppStateUtils {
     private static boolean isAppSentToBackgroundByLockKey(Activity activity) {
         // Check if screen is off
         boolean isScreenOff=false;
-        PowerManager pm = Configuration.getSystemService(Context.POWER_SERVICE);
+        PowerManager pm = RuntimeContext.getSystemService(Context.POWER_SERVICE);
         isScreenOff = !pm.isScreenOn();
 
         if (DEBUG) {
@@ -79,7 +79,7 @@ public class AppStateUtils {
 
     private static boolean isAppSentToBackgroundByBackKey(Activity activity) {
         // Check if back key pressed
-        ActivityManager am = Configuration.getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager am = RuntimeContext.getSystemService(Context.ACTIVITY_SERVICE);
         boolean isLastActivity = false;
         List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(1);
         if (null != tasks && !tasks.isEmpty()) {
@@ -97,12 +97,12 @@ public class AppStateUtils {
     private static boolean isAppSentToBackgroundByHomeKey(Activity activity) {
         // Check if home key pressed
         boolean isHomeKeyPressed=false;
-        ActivityManager am = Configuration.getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager am = RuntimeContext.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(1);
         if (null != tasks && !tasks.isEmpty()) {
             ComponentName topActivity = tasks.get(0).topActivity;
              isHomeKeyPressed = activity.getTaskId() != tasks.get(0).id
-                     && !topActivity.getPackageName().equals(Configuration.getInstance().getPackageName());
+                     && !topActivity.getPackageName().equals(RuntimeContext.getPackageName());
              LSAT_TASK_ID = tasks.get(0).id;
         }
         if (DEBUG) {
@@ -118,7 +118,7 @@ public class AppStateUtils {
      */
     public static void setAppToBackground(boolean isToBackground) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(
-                Configuration.getApplicationContext());
+                RuntimeContext.getApplication());
         SharedPreferences.Editor editor = sp.edit();
         editor.putBoolean(PREF_KEY_APP_TO_BACKGROUND, isToBackground);
         editor.putLong(PREF_KEY_APP_TO_BACKGROUND_TIME, System.currentTimeMillis());

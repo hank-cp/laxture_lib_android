@@ -1,6 +1,6 @@
 package com.laxture.lib.cache.storage;
 
-import com.laxture.lib.Configuration;
+import com.laxture.lib.RuntimeContext;
 
 import java.io.File;
 import java.util.UUID;
@@ -33,7 +33,7 @@ public class RandomStorage implements Storage {
      * @return
      */
     protected File getStorageHome() {
-        return Configuration.getInstance().getStorageHome();
+        return RuntimeContext.getStorageHome();
     }
 
 }

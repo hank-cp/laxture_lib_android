@@ -19,7 +19,6 @@ public abstract class AbstractAsyncTask<Result> extends AbstractTask<Result> {
     private final Callable<Result> mWorker;
     private final MyFutureTask<Result> mFuture;
 
-
     // debugging
     private AtomicLong mStartTime;
     private AtomicLong mEndTime;

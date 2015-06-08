@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.laxture.lib.Configuration;
+import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.util.CommonDBHelper;
 import com.laxture.lib.util.LLog;
 import com.laxture.lib.util.WakeLocker;
@@ -186,7 +186,7 @@ public class StorageCacheRecord {
     public static long getRecylableStorageCacheSize() {
         List<StorageCacheRecord> cacheRecordList = StorageCacheRecord.getCacheStorageOrderByLastUsed();
         long cacheSize = 0;
-        WakeLocker.acquire(Configuration.getInstance().getAppContext(), false);
+        WakeLocker.acquire(RuntimeContext.getApplication(), false);
         for (StorageCacheRecord storageCacheRecord : cacheRecordList) {
             File file = new File(storageCacheRecord.path);
 

@@ -14,7 +14,7 @@ import android.graphics.Typeface;
 import android.view.WindowManager;
 import android.widget.Button;
 
-import com.laxture.lib.Configuration;
+import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.R;
 import com.laxture.lib.util.Checker;
 import com.laxture.lib.util.LLog;
@@ -44,7 +44,7 @@ public abstract class DialogController {
     public DialogController(Activity activity) {
         setActivity(activity);
 
-        TypedArray a = Configuration.getApplicationContext().getTheme().obtainStyledAttributes(
+        TypedArray a = RuntimeContext.getApplication().getTheme().obtainStyledAttributes(
                 R.style.CommonTheme_AlertDialogTheme_Button, new int[] {
                     android.R.attr.background,
                     android.R.attr.textColor,

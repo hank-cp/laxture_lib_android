@@ -1,6 +1,6 @@
 package com.laxture.lib.task;
 
-import com.laxture.lib.Configuration;
+import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.task.AbstractAsyncTask.MyFutureTask;
 import com.laxture.lib.util.Checker;
 
@@ -33,8 +33,8 @@ public abstract class TaskManager {
      * An {@link Executor} that can be used to execute tasks in queue.
      */
     private static final ThreadPoolExecutor QUEUE_EXECUTOR =
-            new ManagedThreadPoolExecutor(Configuration.getInstance().getTaskQueueCosumingLimit(),
-                    Configuration.getInstance().getTaskQueueCosumingLimit(),
+            new ManagedThreadPoolExecutor(RuntimeContext.getConfig().getTaskQueueCosumingLimit(),
+                    RuntimeContext.getConfig().getTaskQueueCosumingLimit(),
                     KEEP_ALIVE, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
                     sThreadFactory);
 

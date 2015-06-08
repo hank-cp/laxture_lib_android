@@ -9,7 +9,7 @@ import java.util.GregorianCalendar;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 
-import com.laxture.lib.Configuration;
+import com.laxture.lib.RuntimeContext;
 
 @SuppressLint("SimpleDateFormat")
 @SuppressWarnings("deprecation")
@@ -191,7 +191,7 @@ public class DateUtil {
     public static boolean is24HourFormat() {
         boolean is24Hour = true;
 
-        ContentResolver cv = Configuration.getInstance().getAppContext().getContentResolver();
+        ContentResolver cv = RuntimeContext.getApplication().getContentResolver();
         String strTimeFormat = android.provider.Settings.System.getString(cv,
                 android.provider.Settings.System.TIME_12_24);
 

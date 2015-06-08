@@ -1,6 +1,6 @@
 package com.laxture.lib.cache.storage;
 
-import com.laxture.lib.Configuration;
+import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.util.Checker;
 
 import java.io.File;
@@ -25,7 +25,7 @@ public class DataStorage implements Storage {
     }
 
     protected File getDataHome() {
-        return Configuration.getInstance().getAppContext().getFilesDir();
+        return RuntimeContext.getApplication().getFilesDir();
     }
 
 }

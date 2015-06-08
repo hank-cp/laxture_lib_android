@@ -6,7 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.telephony.TelephonyManager;
 
-import com.laxture.lib.Configuration;
+import com.laxture.lib.RuntimeContext;
 
 public class NetworkUtil {
 
@@ -14,9 +14,7 @@ public class NetworkUtil {
      * 获取激活的网络类型
      */
     private static NetworkInfo getActiveNetworkInfo() {
-        Configuration conf = Configuration.getInstance();
-        ConnectivityManager connManager = (ConnectivityManager)
-                conf.getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connManager = RuntimeContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         return connManager.getActiveNetworkInfo();
     }
 
@@ -24,9 +22,7 @@ public class NetworkUtil {
      * 检查wifi是否激活
      */
     public static boolean isWiFiActive() {
-        Configuration conf = Configuration.getInstance();
-        ConnectivityManager connManager = (ConnectivityManager)
-                conf.getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connManager = RuntimeContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         return mWifi != null && mWifi.isConnected();
     }
@@ -61,9 +57,7 @@ public class NetworkUtil {
      * 检查当前网络是否是3G信号
      */
     public static boolean is3G() {
-        Configuration conf = Configuration.getInstance();
-        TelephonyManager telManager = (TelephonyManager)
-                conf.getAppContext().getSystemService(Context.TELEPHONY_SERVICE);
+        TelephonyManager telManager = RuntimeContext.getSystemService(Context.TELEPHONY_SERVICE);
         int type = telManager.getNetworkType();
 
         if (!isMobile()) return false;
@@ -86,9 +80,7 @@ public class NetworkUtil {
     }
 
     public static boolean is2G() {
-        Configuration conf = Configuration.getInstance();
-        TelephonyManager telManager = (TelephonyManager)
-                conf.getAppContext().getSystemService(Context.TELEPHONY_SERVICE);
+        TelephonyManager telManager = RuntimeContext.getSystemService(Context.TELEPHONY_SERVICE);
         int type = telManager.getNetworkType();
 
         if (!isMobile()) return false;
@@ -110,10 +102,7 @@ public class NetworkUtil {
      */
     public static boolean isNetworkAvailable() {
         NetworkInfo networkInfo = getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isAvailable()) {
-            return true;
-        }
-        return false;
+        return networkInfo != null && networkInfo.isAvailable();
     }
 
 }

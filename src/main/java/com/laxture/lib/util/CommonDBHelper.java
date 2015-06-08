@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.laxture.lib.Configuration;
+import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.cache.storage.StorageCacheRecord;
 
 public class CommonDBHelper extends SQLiteOpenHelper{
@@ -21,7 +21,7 @@ public class CommonDBHelper extends SQLiteOpenHelper{
     public synchronized static CommonDBHelper getInstance() {
         if (instance == null) {
             instance = new CommonDBHelper(
-                    Configuration.getApplicationContext());
+                    RuntimeContext.getApplication());
         }
         return instance;
     }
