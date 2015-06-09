@@ -32,7 +32,7 @@
 
         <Button
             android:id="@+id/btn_customdate_cancel"
-            style="@style/CommonTheme.Button"
+            style="@style/CustomAlertDialogTheme.Button"
             android:layout_width="120dip"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|center_vertical"

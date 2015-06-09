@@ -21,7 +21,6 @@ import com.laxture.lib.util.ViewUtil;
  */
 public class AlertDialogBuilder extends AlertDialog.Builder {
 
-    private Context mContext;
     private View mTitleBar;
     private TextView mTitle;
     private ImageView mIcon;
@@ -41,9 +40,9 @@ public class AlertDialogBuilder extends AlertDialog.Builder {
     public static AlertDialogBuilder builderWithTitle(Context context) {
         AlertDialogBuilder builder = Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB
             ? new AlertDialogBuilder(new ContextThemeWrapper(context,
-                    R.style.CommonTheme_AlertDialogTheme))
+                    R.style.CustomAlertDialogTheme))
             : new AlertDialogBuilder(context,
-                    R.style.CommonTheme_AlertDialogTheme);
+                    R.style.CustomAlertDialogTheme);
         builder.mTitleBarEnabled = true;
         builder.init(context);
         return builder;
@@ -52,25 +51,23 @@ public class AlertDialogBuilder extends AlertDialog.Builder {
     public static AlertDialogBuilder builderWithoutTitle(Context context) {
         AlertDialogBuilder builder = Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB
             ? new AlertDialogBuilder(new ContextThemeWrapper(context,
-                    R.style.CommonTheme_AlertDialogTheme_NoTitle))
+                    R.style.CustomAlertDialogTheme_NoTitle))
             : new AlertDialogBuilder(context,
-                    R.style.CommonTheme_AlertDialogTheme_NoTitle);
+                    R.style.CustomAlertDialogTheme_NoTitle);
         builder.mTitleBarEnabled = false;
         builder.init(context);
         return builder;
     }
 
     private void init(Context context) {
-        mContext = context;
-
         if (mTitleBarEnabled) {
-            mTitleBar = View.inflate(mContext, R.layout.alert_dialog_title, null);
+            mTitleBar = View.inflate(context, R.layout.alert_dialog_title, null);
             mTitle = (TextView) mTitleBar.findViewById(R.id.alertTitle);
             mIcon = (ImageView) mTitleBar.findViewById(R.id.icon);
             setCustomTitle(mTitleBar);
         }
 
-        View customMessage = View.inflate(mContext, R.layout.alert_dialog_message, null);
+        View customMessage = View.inflate(context, R.layout.alert_dialog_message, null);
         mMessage = (TextView) customMessage.findViewById(R.id.message);
         setView(customMessage);
     }

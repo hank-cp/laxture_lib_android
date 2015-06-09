@@ -8,9 +8,8 @@
     android:paddingLeft="14dip"
     android:paddingRight="10dip">
     <TextView android:id="@+id/message"
-        style="@style/CommonTheme.AlertDialogTheme.TextAppearanceMedium"
+        style="@style/CustomAlertDialogTheme.TextAppearanceMedium"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:padding="5dip" />
 </ScrollView>
-<!-- style="?android:attr/textAppearanceMedium" -->

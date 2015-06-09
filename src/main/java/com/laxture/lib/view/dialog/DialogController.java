@@ -23,6 +23,17 @@ import com.laxture.lib.util.UnHandledException;
 /**
  * Activity and Fragment use DialogController to control Dialog showing and
  * dismissing.
+ *
+ * Use Below XML to specify Dialog button style:
+ * <pre>{@code
+ *     <style name="CustomAlertDialogTheme.Button" parent="@style/AppTheme.Button">
+ *         <item name="android:background">@drawable/btn_dialog</item>
+ *         <item name="android:textColor">@color/btn_default</item>
+ *         <item name="positiveButtonBackground">@drawable/btn_dialog_positive</item>
+ *         <item name="positiveButtonTextColor">@color/white</item>
+ *         <item name="android:textSize">18dp</item>
+ *     </style>
+ * }</pre>
  */
 public abstract class DialogController {
 
@@ -35,7 +46,7 @@ public abstract class DialogController {
     private int mPositiveButtonBackgroundResId;
     private int mPositiveButtonTextColor;
 
-    protected HashMap<String, Dialog> mManagedDialogs = new HashMap<String, Dialog>();
+    protected HashMap<String, Dialog> mManagedDialogs = new HashMap<>();
 
     //*************************************************************************
     //  Constructor
@@ -45,7 +56,7 @@ public abstract class DialogController {
         setActivity(activity);
 
         TypedArray a = RuntimeContext.getApplication().getTheme().obtainStyledAttributes(
-                R.style.CommonTheme_AlertDialogTheme_Button, new int[] {
+                R.style.CustomAlertDialogTheme_Button, new int[] {
                     android.R.attr.background,
                     android.R.attr.textColor,
                     android.R.attr.textSize,
@@ -67,63 +78,22 @@ public abstract class DialogController {
         mActivity = activity;
     }
 
-    public void onShowDialogFailed(String dialogTag) {}
-
-    /**
-     * Use Below XML to specify Dialog button style:
-     * <pre>{@code
-     *     <style name="CommonTheme.AlertDialogTheme.Button" parent="@style/CommonTheme.Button">
-     *         <item name="android:background">@drawable/btn_dialog</item>
-     *         <item name="android:textColor">@color/btn_default</item>
-     *         <item name="positiveButtonBackground">@drawable/btn_dialog_positive</item>
-     *         <item name="positiveButtonTextColor">@color/white</item>
-     *         <item name="android:textSize">18dp</item>
-     *     </style>
-     * }</pre>
-     *
-     * @param backgroundResId
-     * @param color
-     */
-    @Deprecated
-    public void setPositiveButtonStyle(int backgroundResId, int color) {
-        mPositiveButtonBackgroundResId = backgroundResId;
-        mPositiveButtonTextColor = color;
-    }
-
-    /**
-     * Use Below XML to specify Dialog button style:
-     * <pre>{@code
-     *     <style name="CommonTheme.AlertDialogTheme.Button" parent="@style/CommonTheme.Button">
-     *         <item name="android:background">@drawable/btn_dialog</item>
-     *         <item name="android:textColor">@color/btn_default</item>
-     *         <item name="positiveButtonBackground">@drawable/btn_dialog_positive</item>
-     *         <item name="positiveButtonTextColor">@color/white</item>
-     *         <item name="android:textSize">18dp</item>
-     *     </style>
-     * }</pre>
-     *
-     * @param backgroundResId
-     * @param color
-     */
-    public void setButtonStyle(int backgroundResId, int color) {
-        mButtonBackgroundResId = backgroundResId;
-        mButtonTextColor = color;
-    }
+    public void onShowDialogFailed(String dialogName) {}
 
     //*************************************************************************
     //  Dialog Controller Method
     //*************************************************************************
 
-    public abstract Dialog prepareDialog(String dialogTag, Object...params);
+    public abstract Dialog prepareDialog(String dialogName, Object...params);
 
-    public final void showDialog(final String dialogTag, final Object...params) {
-        if (getActivity() == null) onShowDialogFailed(dialogTag);
+    public final void showDialog(final String dialogName, final Object...params) {
+        if (getActivity() == null) onShowDialogFailed(dialogName);
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 try {
                     // generate dialog
-                    Dialog dialog = prepareDialog(dialogTag, params);
+                    Dialog dialog = prepareDialog(dialogName, params);
 
                     // find re-using dialog that showing with another tag
                     String duplicateDialogTag = null;
@@ -133,16 +103,16 @@ public abstract class DialogController {
                     }
                     // dismiss it.
                     if (duplicateDialogTag != null) {
-                        mManagedDialogs.remove(dialogTag);
+                        mManagedDialogs.remove(dialogName);
                     }
 
-                    mManagedDialogs.put(dialogTag, dialog);
+                    mManagedDialogs.put(dialogName, dialog);
                     dialog.show();
 
                 } catch (WindowManager.BadTokenException e) {
                     // Activity is finished.
                     LLog.w("Failed to show dialog. %s", e.getMessage());
-                    onShowDialogFailed(dialogTag);
+                    onShowDialogFailed(dialogName);
                 }
              }
         });
@@ -167,40 +137,31 @@ public abstract class DialogController {
         return mActivity;
     }
 
-    public String getString(int resId) {
-        return mActivity.getString(resId);
-    }
-
-    public final String getString(int resId, Object... formatArgs) {
-        return mActivity.getString(resId, formatArgs);
-    }
-
-    public Dialog getDialog(String dialogTag) {
-        return mManagedDialogs.get(dialogTag);
+    public Dialog getDialog(String dialogName) {
+        return mManagedDialogs.get(dialogName);
     }
 
     //*************************************************************************
     //  Util Dialog
     //*************************************************************************
 
-    private HashMap<String, UtilDialogCallback> mCallbacks
-            = new HashMap<String, UtilDialogCallback>();
+    private HashMap<String, DialogActionHandler> mCallbacks = new HashMap<>();
 
     private ProgressDialog mProgressDialog;
     private AlertDialog mAlertDialog;
     private AlertDialog mYesNoDialog;
     private AlertDialog mYesNoCancelDialog;
 
-    public ProgressDialog getProgressDialog(String dialogTag,
+    public ProgressDialog getProgressDialog(String dialogName,
                                             String message,
                                             boolean cancelable,
-                                            UtilDialogCallback callback) {
+                                            DialogActionHandler callback) {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(mActivity);
             mProgressDialog.setIndeterminate(true);
         }
         // Update dialog conf
-        mCallbacks.put(dialogTag, callback);
+        mCallbacks.put(dialogName, callback);
         mProgressDialog.setMessage(message);
         mProgressDialog.setCancelable(cancelable);
         mProgressDialog.setOnCancelListener(callback);
@@ -208,14 +169,14 @@ public abstract class DialogController {
         return mProgressDialog;
     }
 
-    public AlertDialog getAlertDialog(String dialogTag,
+    public AlertDialog getAlertDialog(String dialogName,
                                       String title,
                                       String message,
                                       String yesLabel,
                                       boolean cancelable,
-                                      UtilDialogCallback callback) {
+                                      DialogActionHandler callback) {
         if (mAlertDialog == null) {
-            mAlertDialog = generateAlertDialog(dialogTag, title, message,
+            mAlertDialog = generateAlertDialog(title, message,
                     yesLabel, null, null, cancelable);
             mAlertDialog.setOnShowListener(mAlertButtonStyleUpdater);
         } else {
@@ -229,19 +190,19 @@ public abstract class DialogController {
         }
 
         mAlertDialog.setOnCancelListener(callback);
-        mCallbacks.put(dialogTag, callback);
+        mCallbacks.put(dialogName, callback);
         return mAlertDialog;
     }
 
-    public AlertDialog getYesNoDialog(String dialogTag,
+    public AlertDialog getYesNoDialog(String dialogName,
                                       String title,
                                       String message,
                                       String yesLabel,
                                       String noLabel,
                                       boolean cancelable,
-                                      UtilDialogCallback callback) {
+                                      DialogActionHandler callback) {
         if (mYesNoDialog == null) {
-            mYesNoDialog = generateAlertDialog(dialogTag, title, message, yesLabel,
+            mYesNoDialog = generateAlertDialog(title, message, yesLabel,
                     noLabel, null, cancelable);
             mYesNoDialog.setOnShowListener(mPositiveButtonStyleUpdater);
         } else {
@@ -255,20 +216,20 @@ public abstract class DialogController {
         }
 
         mYesNoDialog.setOnCancelListener(callback);
-        mCallbacks.put(dialogTag, callback);
+        mCallbacks.put(dialogName, callback);
         return mYesNoDialog;
     }
 
-    public AlertDialog getYesNoCancelDialog(String dialogTag,
+    public AlertDialog getYesNoCancelDialog(String dialogName,
                                             String title,
                                             String message,
                                             String yesLabel,
                                             String noLabel,
                                             String cancelLabel,
                                             boolean cancelable,
-                                            UtilDialogCallback callback) {
+                                            DialogActionHandler callback) {
         if (mYesNoCancelDialog == null) {
-            mYesNoCancelDialog = generateAlertDialog(dialogTag, title, message,
+            mYesNoCancelDialog = generateAlertDialog(title, message,
                     yesLabel, noLabel, cancelLabel, cancelable);
             mYesNoCancelDialog.setOnShowListener(mPositiveButtonStyleUpdater);
         } else {
@@ -284,12 +245,11 @@ public abstract class DialogController {
         }
 
         mYesNoCancelDialog.setOnCancelListener(callback);
-        mCallbacks.put(dialogTag, callback);
+        mCallbacks.put(dialogName, callback);
         return mYesNoCancelDialog;
     }
 
-    private AlertDialog generateAlertDialog(String dialogTag,
-                                            String title,
+    private AlertDialog generateAlertDialog(String title,
                                             String message,
                                             String yesLabel,
                                             String noLabel,
@@ -310,7 +270,7 @@ public abstract class DialogController {
                         }
                         if (dialogTag != null) {
                             dismissDialog(dialogTag);
-                            UtilDialogCallback callback = mCallbacks.get(dialogTag);
+                            DialogActionHandler callback = mCallbacks.get(dialogTag);
                             if (callback != null) callback.onYes(dialog);
                         }
                     }
@@ -326,7 +286,7 @@ public abstract class DialogController {
                         }
                         if (dialogTag != null) {
                             dismissDialog(dialogTag);
-                            UtilDialogCallback callback = mCallbacks.get(dialogTag);
+                            DialogActionHandler callback = mCallbacks.get(dialogTag);
                             if (callback != null) callback.onNo(dialog);
                         }
                     }
@@ -343,7 +303,7 @@ public abstract class DialogController {
                         }
                         if (dialogTag != null) {
                             dismissDialog(dialogTag);
-                            UtilDialogCallback callback = mCallbacks.get(dialogTag);
+                            DialogActionHandler callback = mCallbacks.get(dialogTag);
                             if (callback != null) callback.onCancel(dialog);
                         }
                     }
@@ -410,7 +370,7 @@ public abstract class DialogController {
         }
     };
 
-    public static abstract class UtilDialogCallback
+    public static abstract class DialogActionHandler
             implements DialogInterface.OnCancelListener {
         public void onYes(DialogInterface dialog) {}
         public void onNo(DialogInterface dialog) {}

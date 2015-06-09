@@ -36,34 +36,6 @@
         <attr name="android:fadingEdgeLength" />
     </declare-styleable>
 
-    <!-- GridLayout Compact -->
-    <declare-styleable name="ViewGroup_MarginLayout">
-        <attr name="android:layout_margin" />
-        <attr name="android:layout_marginLeft" />
-        <attr name="android:layout_marginTop" />
-        <attr name="android:layout_marginRight" />
-        <attr name="android:layout_marginBottom" />
-    </declare-styleable>
-
-    <declare-styleable name="GridLayout">
-        <attr name="android:orientation" />
-        <attr name="rowCount" format="integer" />
-        <attr name="columnCount" format="integer" />
-        <attr name="useDefaultMargins" format="boolean" />
-        <attr name="alignmentMode" format="integer"/>
-        <attr name="rowOrderPreserved" format="boolean" />
-        <attr name="columnOrderPreserved" format="boolean" />
-        <attr name="defaultGap" format="dimension" />
-    </declare-styleable>
-
-    <declare-styleable name="GridLayout_Layout">
-        <attr name="layout_row" format="integer" />
-        <attr name="layout_rowSpan" format="integer" min="1" />
-        <attr name="android:layout_column" />
-        <attr name="layout_columnSpan" format="integer" min="1" />
-        <attr name="android:layout_gravity" />
-    </declare-styleable>
-
     <!-- Dialog Style -->
     <declare-styleable name="CommonTheme.AlertDialogTheme.Button">
         <attr name="positiveButtonBackground" format="reference"/>

@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 
 import com.laxture.lib.R;
+import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.util.UnHandledException;
 
 public class SimpleDialogController extends DialogController {
@@ -44,21 +45,21 @@ public class SimpleDialogController extends DialogController {
     }
 
     @Override
-    public Dialog prepareDialog(String dialogTag, Object...params) {
+    public Dialog prepareDialog(String dialogName, Object...params) {
 
-        if (DIALOG_PROGRESS.equals(dialogTag)) {
-            return getProgressDialog(dialogTag,
+        if (DIALOG_PROGRESS.equals(dialogName)) {
+            return getProgressDialog(dialogName,
                     params[0].toString(),
                     (Boolean) params[1], null);
 
-        } else if (DIALOG_ALERT.equals(dialogTag)) {
-            return getAlertDialog(dialogTag,
+        } else if (DIALOG_ALERT.equals(dialogName)) {
+            return getAlertDialog(dialogName,
                     null,
                     params[0].toString(),
-                    getString(R.string.label_ok),
+                    RuntimeContext.getString(R.string.label_ok),
                     true, null);
 
-        } else throw new UnHandledException("Unknown dialog tag");
+        } else throw new UnHandledException("Unknown dialog name");
     }
 
 }
