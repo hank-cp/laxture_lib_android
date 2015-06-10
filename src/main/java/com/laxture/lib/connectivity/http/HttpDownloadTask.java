@@ -5,28 +5,21 @@ import com.laxture.lib.cache.storage.StorageCacheRecord;
 import com.laxture.lib.util.Checker;
 import com.laxture.lib.util.LLog;
 import com.laxture.lib.util.StreamUtil;
-import com.laxture.lib.util.UnHandledException;
+
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
+import java.net.HttpURLConnection;
 
 public abstract class HttpDownloadTask<Result> extends HttpTask<Result> {
 
     public boolean enableResumeFromBreakPoint;
 
-    public boolean avoidDuplicated;
+    public boolean avoidDuplicatedDownload = true;
 
     private long mContentLength;
     public long getContentLength() { return mContentLength; }
@@ -46,93 +39,76 @@ public abstract class HttpDownloadTask<Result> extends HttpTask<Result> {
     }
 
     public HttpDownloadTask(String url, File downloadFile) {
-        init(url, downloadFile);
+        super(url);
+        init(downloadFile);
     }
 
-    protected void init(String url, File downloadFile) {
-        this.url = url;
+    public HttpDownloadTask(String url, File downloadFile, HttpTaskConfig config) {
+        super(url, config);
+        init(downloadFile);
+    }
+
+    protected void init(File downloadFile) {
         mDownloadFile = downloadFile;
         mTempFile = new File(downloadFile.getParentFile(), downloadFile.getName()+".part");
     }
 
-    public HttpDownloadTask() {}
-
     @Override
     protected Result run() {
-        if (avoidDuplicated && !Checker.isEmpty(mDownloadFile)) {
-            return processResponse(null);
+        if (avoidDuplicatedDownload && !Checker.isEmpty(mDownloadFile)) {
+            return generateResult();
         } else return super.run();
     }
 
     @Override
-    protected HttpUriRequest buildRequest() {
-        LLog.d("Initializing Binary Http request...");
-
-        HttpUriRequest httpRequest;
-        if (Checker.isEmpty(arguments)) {
-            httpRequest = new HttpGet(url);
-        } else {
-            HttpPost httpPost = new HttpPost(url);
-            HttpEntity entity = null;
-            try {
-                entity = new UrlEncodedFormEntity(arguments);
-                httpPost.setEntity(entity);
-            } catch (UnsupportedEncodingException e) {
-                new UnHandledException(e);
-            }
-            httpRequest = httpPost;
-        }
-
-        if (!Checker.isEmpty(headers)) {
-            for (String key : headers.keySet())
-                httpRequest.setHeader(key, headers.get(key));
-        }
+    protected HttpURLConnection createConnection(String url) throws IOException {
+        HttpURLConnection connection = super.createConnection(url);
 
         if (!Checker.isEmpty(mModifyTimestamp)) {
-            httpRequest.setHeader("If-Modified-Since", mModifyTimestamp);
+            connection.setRequestProperty("If-Modified-Since", mModifyTimestamp);
         }
 
         if (!Checker.isEmpty(mTempFile)) {
             mDownloadedLength = mTempFile.length();
-            httpRequest.setHeader("Range", "bytes="+mDownloadedLength+"-");
+            connection.setRequestProperty("Range", "bytes=" + mDownloadedLength + "-");
         }
-        return httpRequest;
+
+        return connection;
     }
 
-    protected void addCache(String cacheId, HttpResponse response) {
-        Header header = response.getFirstHeader("Last-Modified");
+    protected void addCache(String cacheId, String lastModified) {
         StorageCacheRecord cRecord = new StorageCacheRecord();
         cRecord.url = cacheId;
         cRecord.path = getDownloadFile().getAbsolutePath();
-        if (header != null) cRecord.lastModify = header.getValue();
+        // 下载文件后更新缓存表的lastModify
+        cRecord.lastModify = lastModified;
         cRecord.lastUsed = System.currentTimeMillis();
-        //下载文件后更新缓存表的lastModify
         StorageCacheManageThread.getInstance().InsertDownloadStorageCache(cRecord);
     }
 
     @Override
-    public void onReceived() {
-        super.onReceived();
+    protected void processResponse(InputStream inputStream) throws IOException {
+        super.processResponse(inputStream);
 
         // If 304, no need to consume entity
         if (!Checker.isEmpty(mDownloadFile)
-                && httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_MODIFIED) {
+                && connection.getResponseCode() == HttpURLConnection.HTTP_NOT_MODIFIED) {
             LLog.d("Requested Content not modified, skip downloading");
             return;
         }
 
         // example response: Content-Range: bytes 302736-2156918/2156919
-        Header rangeHeader = httpResponse.getFirstHeader("Content-Range");
-        Header lengthHeader = httpResponse.getFirstHeader("Content-Length");
-        mContentType = httpResponse.getEntity().getContentType().getValue();
-        if (rangeHeader != null) {
-            mContentLength = Integer.parseInt(rangeHeader.getValue().split("/")[1]);
+        String rangeHeader = connection.getHeaderField("Content-Range");
+        String lengthHeader = connection.getHeaderField("Content-Length");
+        mContentType = connection.getContentType();
+        if (Checker.isEmpty(rangeHeader)) {
+            mContentLength = Integer.parseInt(rangeHeader.split("/")[1]);
         } else if (lengthHeader != null) {
-            mContentLength = Integer.parseInt(lengthHeader.getValue());
+            mContentLength = Integer.parseInt(lengthHeader);
         }
 
         try {
-            long downloadLength = saveBinaryFile();
+            long downloadLength = saveBinaryFile(inputStream);
             if (mContentLength > 0 && downloadLength != mContentLength) {
                 LLog.e("Downloaded file size is not matched. Expected %s, but received %s",
                         mContentLength, downloadLength);
@@ -149,19 +125,13 @@ public abstract class HttpDownloadTask<Result> extends HttpTask<Result> {
         }
     }
 
-    private long saveBinaryFile() throws IOException {
-        HttpEntity entity = httpResponse.getEntity();
-        InputStream is = null;
+    private long saveBinaryFile(InputStream is) throws IOException {
         FileOutputStream fos = null;
 
-        if (entity == null)
-            throw new IllegalArgumentException("HTTP entity should not be null.");
-
-        //ref: http://stackoverflow.com/questions/4339082/android-decoder-decode-returned-false-for-bitmap-download
+        //ref: http://stackoverflow.com/questions/4339082/
 //            BufferedHttpEntity bufferedEntity = new BufferedHttpEntity(entity);
 //            if (bufferedEntity.getContent() == null) return 0;
 //            is = new FlushedInputStream(bufferedEntity.getContent());
-        is = entity.getContent();
         if (is == null) return 0;
 
         // Create parent folder to avoid IOException
@@ -207,7 +177,6 @@ public abstract class HttpDownloadTask<Result> extends HttpTask<Result> {
             mTempFile.delete();
         }
 
-        StreamUtil.closeStream(is);
         StreamUtil.closeStream(fos);
         return mDownloadFile.length();
     }

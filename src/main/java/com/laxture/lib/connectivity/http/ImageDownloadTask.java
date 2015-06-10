@@ -1,13 +1,13 @@
 package com.laxture.lib.connectivity.http;
 
 import com.laxture.lib.util.BitmapUtil;
+import com.laxture.lib.util.Checker;
 import com.laxture.lib.util.LLog;
+import com.laxture.lib.util.UnHandledException;
 
 import java.io.File;
-
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
+import java.io.IOException;
+import java.net.HttpURLConnection;
 
 public class ImageDownloadTask extends HttpDownloadTask<ImageDownloadTask.ImageInfo> {
 
@@ -19,20 +19,24 @@ public class ImageDownloadTask extends HttpDownloadTask<ImageDownloadTask.ImageI
     }
 
     @Override
-    protected ImageInfo processResponse(HttpResponse response) {
+    protected ImageInfo generateResult() {
         // validate downloaded image.
-        if (!HttpHelper.CONTENT_TYPE_JPEG.equals(getContentType())
-                && !HttpHelper.CONTENT_TYPE_PNG.equals(getContentType())
-                && !HttpHelper.CONTENT_TYPE_GIF.equals(getContentType())
-                && response.getStatusLine().getStatusCode() != HttpStatus.SC_NOT_MODIFIED) {
-            LLog.e("Download image failed, not valid content type: %s", getContentType());
-            setErrorDetails(new HttpTaskException(
-                    HttpTaskException.HTTP_ERR_CODE_DOWNLOAD_ERROR));
+        try {
+            if (!HttpHelper.CONTENT_TYPE_JPEG.equals(getContentType())
+                    && !HttpHelper.CONTENT_TYPE_PNG.equals(getContentType())
+                    && !HttpHelper.CONTENT_TYPE_GIF.equals(getContentType())
+                    && connection.getResponseCode() != HttpURLConnection.HTTP_NOT_MODIFIED) {
+                LLog.e("Download image failed, not valid content type: %s", getContentType());
+                setErrorDetails(new HttpTaskException(
+                        HttpTaskException.HTTP_ERR_CODE_DOWNLOAD_ERROR));
 
-        } else if (!BitmapUtil.isValidImageFile(getDownloadFile())) {
-            LLog.e("Download image failed, not valid image.");
-            setErrorDetails(new HttpTaskException(
-                    HttpTaskException.HTTP_ERR_CODE_DOWNLOAD_ERROR));
+            } else if (!BitmapUtil.isValidImageFile(getDownloadFile())) {
+                LLog.e("Download image failed, not valid image.");
+                setErrorDetails(new HttpTaskException(
+                        HttpTaskException.HTTP_ERR_CODE_DOWNLOAD_ERROR));
+            }
+        } catch (IOException e) {
+            throw new UnHandledException(e);
         }
 
         if (getErrorDetails() != null) return null;
@@ -42,9 +46,9 @@ public class ImageDownloadTask extends HttpDownloadTask<ImageDownloadTask.ImageI
         imageInfo.contentLength = getContentLength();
         imageInfo.downloadedFile = getDownloadFile();
         imageInfo.cacheId = mCacheId;
-        Header header = response.getFirstHeader("Last-Modified");
-        if (header != null) imageInfo.lastModify = header.getValue();
-        addCache(url, response);
+        String lastModified = connection.getHeaderField("Last-Modified");
+        if (!Checker.isEmpty(lastModified)) imageInfo.lastModify = lastModified;
+        addCache(url, lastModified);
         return imageInfo;
     }
 

@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 
 import com.laxture.lib.R;
-import com.laxture.lib.util.ArrayUtil;
+import com.laxture.lib.util.CollectionUtil;
 import com.laxture.lib.util.LLog;
 
 public class WheelDatePicker extends FrameLayout {
@@ -140,10 +140,10 @@ public class WheelDatePicker extends FrameLayout {
 
     public void updateAdapters() {
         // 判断大小月及是否闰年,用来确定"日"的数据
-        if (ArrayUtil.find(sBigMonthList, mCurrentTime.getMonthOfYear()) != -1) {
+        if (CollectionUtil.find(sBigMonthList, mCurrentTime.getMonthOfYear()) != -1) {
             mDayWheel.setAdapter(mAdapterBigMonth);
 
-        } else if (ArrayUtil.find(sSmallMonthList, mCurrentTime.getMonthOfYear()) != -1) {
+        } else if (CollectionUtil.find(sSmallMonthList, mCurrentTime.getMonthOfYear()) != -1) {
             mDayWheel.setAdapter(mAdapterSmallMonth);
 
         } else {
@@ -215,11 +215,11 @@ public class WheelDatePicker extends FrameLayout {
                 && mCurrentTime.getMonthOfYear() == mStartTime.getMonthOfYear()) {
             int startDayIndex = mStartTime.getDayOfMonth();
           //不允许超过下限时间限制最小日
-            if (ArrayUtil.find(sBigMonthList, mCurrentTime.getMonthOfYear()) != -1) {
+            if (CollectionUtil.find(sBigMonthList, mCurrentTime.getMonthOfYear()) != -1) {
                 mDayWheel.setAdapter(new NumericWheelAdapter(mStartTime
                         .getDayOfMonth(), 31, "%02d", "日"));
 
-            } else if (ArrayUtil.find(sSmallMonthList,
+            } else if (CollectionUtil.find(sSmallMonthList,
                     mCurrentTime.getMonthOfYear()) != -1) {
                 mDayWheel.setAdapter(new NumericWheelAdapter(mStartTime
                         .getDayOfMonth(), 30, "%02d", "日"));

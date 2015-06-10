@@ -6,6 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 
+/**
+ * Extension of {@link HorizontalScrollView} to trigger event of showing
+ * child view on screen.
+ */
 public class HorizontalScrollViewExt extends HorizontalScrollView {
 
     private ScrollViewListener mScrollViewListener = null;

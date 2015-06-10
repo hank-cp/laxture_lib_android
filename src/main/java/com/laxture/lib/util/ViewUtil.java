@@ -8,6 +8,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.support.v4.app.Fragment;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -204,6 +205,10 @@ public final class ViewUtil {
     public static int dip2px(float dpValue) {
         final float scale = RuntimeContext.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
+    }
+
+    public static View findViewById(Fragment fragment, int id) {
+        return fragment.getActivity().findViewById(id);
     }
 
 }

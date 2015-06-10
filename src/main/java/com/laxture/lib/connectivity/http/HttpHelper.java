@@ -1,38 +1,21 @@
 package com.laxture.lib.connectivity.http;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
+import android.net.Uri;
+
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-
-import org.apache.http.HttpStatus;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-
-import com.laxture.lib.util.Checker;
-import com.laxture.lib.util.StreamUtil;
-import com.laxture.lib.util.UnHandledException;
 
 public class HttpHelper {
 
     public static final int HTTP_ERR_CODE_SUCCESSFUL = 0;
-
     public static final int HTTP_ERR_CODE_NETWORK_NOT_AVAILABLE = 90001;
-
     public static final int HTTP_ERR_CODE_CONNECTION_ERROR = 90002;
-
     public static final int HTTP_ERR_CODE_CONNECTION_TIME_OUT = 90003;
-
     public static final int HTTP_ERR_CODE_UNKNOW_ERROR = 90004;
 
     public static final String CONTENT_TYPE_JSON = "application/json";
@@ -50,75 +33,8 @@ public class HttpHelper {
     public static final String HTTP_METHOD_GET = "GET";
 
     public static boolean isBadHttpStatusCode(int code) {
-        return code < HttpStatus.SC_OK
-                || code > HttpStatus.SC_TEMPORARY_REDIRECT;
-    }
-
-    public static String simpleHttpRequestString(String url) {
-        try {
-            return new String(simpleHttpRequest(url), UTF_8);
-        } catch (UnsupportedEncodingException e) {
-            throw new UnHandledException("Failed to decode response from " + url, e);
-        }
-    }
-
-    public static Bitmap simpleHttpRequestBitmap(String urlString) {
-        if (Checker.isEmpty(urlString)) return null;
-
-        InputStream httpStream = null;
-        InputStream in = null;
-        OutputStream out = null;
-
-        try {
-            URL url = new URL(urlString);
-            if (url.getProtocol().equals("https"))
-                url = new URL(urlString.replaceAll("https://", "http://"));
-
-            httpStream = url.openStream();
-            in = new FlushedInputStream(httpStream);
-            return BitmapFactory.decodeStream(in);
-
-        } catch (MalformedURLException e) {
-            throw new UnHandledException("Bad url "+urlString, e);
-        } catch (IOException e) {
-            throw new UnHandledException(e.getMessage(), e);
-        } finally {
-            StreamUtil.closeStream(httpStream);
-            StreamUtil.closeStream(in);
-            StreamUtil.closeStream(out);
-        }
-    }
-
-    public static byte[] simpleHttpRequest(String urlString) {
-        if (Checker.isEmpty(urlString)) return null;
-
-        InputStream httpStream = null;
-        InputStream in = null;
-        OutputStream out = null;
-
-        try {
-            URL url = new URL(urlString);
-            if (url.getProtocol().equals("https"))
-                url = new URL(urlString.replaceAll("https://", "http://"));
-
-            httpStream = url.openStream();
-            in = new BufferedInputStream(httpStream, StreamUtil.IO_BUFFER_SIZE);
-
-            ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
-            out = new BufferedOutputStream(dataStream, StreamUtil.IO_BUFFER_SIZE);
-            StreamUtil.copy(in, out);
-            out.flush();
-
-            return dataStream.toByteArray();
-        } catch (MalformedURLException e) {
-            throw new UnHandledException("Bad url "+urlString, e);
-        } catch (IOException e) {
-            throw new UnHandledException(e.getMessage(), e);
-        } finally {
-            StreamUtil.closeStream(httpStream);
-            StreamUtil.closeStream(in);
-            StreamUtil.closeStream(out);
-        }
+        return code < HttpURLConnection.HTTP_OK
+                || code >= HttpURLConnection.HTTP_BAD_REQUEST;
     }
 
     /**

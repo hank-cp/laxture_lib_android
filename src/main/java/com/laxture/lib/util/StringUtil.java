@@ -12,83 +12,6 @@ import android.text.TextUtils;
 public class StringUtil {
 
     /**
-     * 获取空字符
-     * @param src
-     * @return
-     */
-    public static String getEmptyIfNull(String src) {
-        if (null == src) {
-            return "";
-        }
-        return src;
-    }
-
-    /**
-     *文字在左边，右边补全空白字符
-     * @param src
-     * @param length
-     * @return
-     */
-    public static String ljust(String src,int length){
-        return ljust(src,length,' ');
-    }
-
-    /**
-     * 文字在右边，左边补全空白字符
-     * @param src
-     * @param length
-     * @return
-     */
-    public static String rjust(String src,int length){
-        return rjust(src,length,' ');
-    }
-
-    /**
-     * 文字在左边，左边补全字符
-     * @param src
-     * @param length
-     * @param c
-     * @return
-     */
-    public static String ljust(String src, int length, char c){
-        if (src.length() < length) {
-            return src+just(length-src.length(), c);
-        } else{
-            return src;
-        }
-    }
-
-    /**
-     * 文字在右边，左边补全空白字符
-     * @param src
-     * @param length
-     * @param c
-     * @return
-     */
-    public static String rjust(String src, int length, char c){
-        if (src.length() < length) {
-            return just(length-src.length(), c)+src;
-        } else{
-            return src;
-        }
-    }
-
-    /**
-     * 补全n个字符串
-     * //TODO 如果数字比较大，可以使用2的指数复制
-     * @param length
-     * @param c
-     * @return
-     */
-    private static String just(int length, char c){
-        StringBuilder sb = new StringBuilder();
-        for(int i=0; i<length; i++){
-            sb.append(c);
-        }
-        return sb.toString();
-    }
-
-    /**
      * 省略号字符
      */
     private static final String ELIPSE_CHARACTOR="…";
@@ -99,7 +22,7 @@ public class StringUtil {
      * @param length 最大字符长度，超过这个长度之后后面的显示为一个省略号
      * @return
      */
-    public static String getElipseString(String rs, int length){
+    public static String getElipseString(String rs, int length) {
         if (Checker.isEmpty(rs)) return "";
         if (rs.length() <= length) return rs;
         return rs.substring(0, length)+ELIPSE_CHARACTOR;
@@ -109,24 +32,12 @@ public class StringUtil {
 
         Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
 
-        if (ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
-
+        return ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
                 || ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
-
                 || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
-
                 || ub == Character.UnicodeBlock.GENERAL_PUNCTUATION
-
                 || ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION
-
-                || ub == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS) {
-
-            return true;
-
-        }
-
-        return false;
-
+                || ub == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS;
     }
 
     /**
@@ -182,7 +93,7 @@ public class StringUtil {
             return rs.substring(0,i)+ ELIPSE_CHARACTOR;
         }
         return rs;
-  }
+    }
 
     /**
     *

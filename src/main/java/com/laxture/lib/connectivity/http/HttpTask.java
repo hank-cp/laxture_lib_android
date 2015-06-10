@@ -1,100 +1,80 @@
 package com.laxture.lib.connectivity.http;
 
+import android.net.Uri;
+
 import com.laxture.lib.task.AbstractAsyncTask;
 import com.laxture.lib.util.Checker;
 import com.laxture.lib.util.LLog;
 import com.laxture.lib.util.NetworkUtil;
 import com.laxture.lib.util.UnHandledException;
 
-import org.apache.http.*;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.entity.HttpEntityWrapper;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.DefaultRedirectHandler;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
-import org.apache.http.protocol.HttpContext;
-
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.zip.GZIPInputStream;
 
 public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
 
     private static final boolean DEBUG = false;
 
-    private static final int HTTP_CONNECTION_TIMEOUT = 10 * 1000; // 10 seconds
-    private static final int HTTP_SOCKET_TIMEOUT = 20 * 1000; // 20 seconds
-    private static final int HTTP_SOCKET_BUFFER_SIZE = 8192; // http的缓冲区大小设置
-
-    private static final int RETRY_TIMES = 1;
-
-    private static DefaultHttpClient sHttpClient;
-
-    volatile HttpUriRequest httpRequest;
-    HttpResponse httpResponse;
     int retries;
 
     // request arguments
     public String url;
 
-    protected List<NameValuePair> arguments;
+    protected HashMap<String, String> arguments;
 
-    protected Map<String, String> headers;
+    protected HttpTaskConfig config;
 
-    private synchronized DefaultHttpClient getHttpClient() {
-        if (sHttpClient == null) {
-            HttpParams httpParams = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(httpParams, HTTP_CONNECTION_TIMEOUT);
-            HttpConnectionParams.setSoTimeout(httpParams, HTTP_SOCKET_TIMEOUT);
-            HttpProtocolParams.setContentCharset(httpParams, HttpHelper.UTF_8);
-            HttpConnectionParams.setSocketBufferSize(httpParams, HTTP_SOCKET_BUFFER_SIZE);
-            SchemeRegistry schemeRegistry = new SchemeRegistry();
-            schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-            schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
-            ClientConnectionManager cm = new ThreadSafeClientConnManager(httpParams, schemeRegistry);
-            sHttpClient = new DefaultHttpClient(cm, httpParams);
-            GZipResponseInterceptor gzipInterceptor = new GZipResponseInterceptor();
-            sHttpClient.addResponseInterceptor(gzipInterceptor);
-            sHttpClient.setRedirectHandler(new DefaultRedirectHandler() {
-                @Override
-                public boolean isRedirectRequested(HttpResponse response, HttpContext context) {
-                    boolean isRedirect = super.isRedirectRequested(response, context);
-                    if (!isRedirect) {
-                        int responseCode = response.getStatusLine().getStatusCode();
-                        if (responseCode == HttpStatus.SC_MOVED_PERMANENTLY
-                                || responseCode == HttpStatus.SC_MOVED_TEMPORARILY) {
-                            return true;
-                        }
-                    }
-                    return isRedirect;
-                }
-            });
-        }
-        return sHttpClient;
+    protected HttpURLConnection connection;
+
+    protected int responseCode;
+
+    //*************************************************************************
+    // Http Support
+    //*************************************************************************
+
+    public HttpTask(String url) {
+        this.url = url;
+        this.config = new HttpTaskConfig();
     }
 
-    public void addArgument(String key, String value) {
-        if (Checker.isEmpty(arguments)) arguments = new ArrayList<NameValuePair>();
-        arguments.add(new BasicNameValuePair(key, value));
+    public HttpTask(String url, HttpTaskConfig config) {
+        this.url = url;
+        this.config = config;
     }
 
-    public void addHeader(String key, String value) {
-        if (Checker.isEmpty(headers)) headers = new HashMap<String, String>();
-        headers.put(key, value);
+    public void addArgument(String key, Object value) {
+        if (arguments == null) arguments = new HashMap<>();
+        arguments.put(key, value.toString());
+    }
+
+    public void addArgument(String key, int value) {
+        if (arguments == null) arguments = new HashMap<>();
+        arguments.put(key, Integer.toString(value));
+    }
+
+    public void addArgument(String key, boolean value) {
+        if (arguments == null) arguments = new HashMap<>();
+        arguments.put(key, Boolean.toString(value));
+    }
+
+    public void addArgument(String key, long value) {
+        if (arguments == null) arguments = new HashMap<>();
+        arguments.put(key, Long.toString(value));
+    }
+
+    public void addArgument(String key, float value) {
+        if (arguments == null) arguments = new HashMap<>();
+        arguments.put(key, Float.toString(value));
+    }
+
+    public void addArgument(String key, double value) {
+        if (arguments == null) arguments = new HashMap<>();
+        arguments.put(key, Double.toString(value));
     }
 
     //*************************************************************************
@@ -109,37 +89,48 @@ public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
             setErrorDetails(new HttpTaskException(errorCode));
             return null;
         }
+        // if user cancel the connection, onError should handle it
+        if (isCancelled()) return onErrorOrCancel(null);
 
         try {
-            httpRequest = buildRequest();
+            connection = createConnection(url);
 
-            onSend();
-            httpResponse = getHttpClient().execute(httpRequest);
+            sendRequest();
+
+            int redirectCount = 0;
+            while (connection.getResponseCode() / 100 == 3 && redirectCount < config.maxRedirectCount) {
+                connection = createConnection(connection.getHeaderField("Location"));
+                redirectCount++;
+            }
+
             // if user cancel the connection, onError should handle it
             if (isCancelled()) return onErrorOrCancel(null);
 
+            responseCode = connection.getResponseCode();
             // if response status code is not 200, or content type (MIME type) is not json
             // go to onError() method to retry or terminate
-            if (httpResponse == null
-                    || HttpHelper.isBadHttpStatusCode(httpResponse.getStatusLine().getStatusCode()))
+            if (HttpHelper.isBadHttpStatusCode(responseCode))
                 return onErrorOrCancel(null);
-            onReceived();
 
-            return processResponse(httpResponse);
+            processResponse(connection.getInputStream());
+
+            return generateResult();
 
         } catch (Exception e) {
             // exception should be log in onError();
-            LLog.w("error:" + e.getMessage());
             return onErrorOrCancel(e);
+
+        } finally {
+            connection.disconnect();
         }
     }
 
     @Override
     public boolean cancel() {
         try {
-            if (httpRequest != null) httpRequest.abort();
+            if (connection != null) connection.disconnect();
         } catch (Throwable e) {
-            LLog.w("Abort http connection failed : %s", url);
+            LLog.i("Abort http connection %s", url);
         }
         return super.cancel();
     }
@@ -148,35 +139,53 @@ public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
     // Http Callback
     //*************************************************************************
 
-    protected abstract HttpUriRequest buildRequest();
-
-    protected abstract Result processResponse(HttpResponse response);
+    protected HttpURLConnection createConnection(String url) throws IOException {
+        String encodedUrl = Uri.encode(url, config.allowedUriChars);
+        HttpURLConnection conn = (HttpURLConnection) new URL(encodedUrl).openConnection();
+        conn.setConnectTimeout(config.connectionTimeout);
+        conn.setReadTimeout(config.socketTimeout);
+        return conn;
+    }
 
     protected int getRetries() {
         return retries;
     }
 
-    protected void onSend() {
+    protected void sendRequest() throws IOException {
+        if (Checker.isEmpty(arguments)) return;
+
         // Log request info
         if (DEBUG) {
-            LLog.v("Sending Http Request to " + httpRequest.getURI());
-            LLog.v("Http Request Header Line :: " + httpRequest.getRequestLine().toString());
-            for (Header header : httpRequest.getAllHeaders()) {
-                LLog.v("Http Request Header :: " + header.toString());
-            }
+            LLog.v("Requesting Http URL (%s) : %s", connection.getURL(), connection.getRequestMethod());
+        }
+
+        StringBuilder postData = new StringBuilder();
+        for (Map.Entry<String, String> param : arguments.entrySet()) {
+            if (postData.length() != 0) postData.append('&');
+            postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
+            postData.append('=');
+            postData.append(URLEncoder.encode(param.getValue(), "UTF-8"));
+        }
+        byte[] postDataBytes = postData.toString().getBytes("UTF-8");
+
+        connection.setRequestMethod(HttpHelper.HTTP_METHOD_POST);
+        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        connection.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
+        connection.setRequestProperty("charset", "utf-8");
+        connection.setInstanceFollowRedirects(false);
+        connection.setDoOutput(true);
+        connection.setUseCaches(false);
+        connection.getOutputStream().write(postDataBytes);
+    }
+
+    protected void processResponse(InputStream inputStream) throws IOException {
+        // Log response info
+        if (DEBUG) {
+            LLog.v("Receiving Http Response from " + connection.getURL());
         }
     }
 
-    protected void onReceived() {
-        // Log response info
-        if (DEBUG) {
-            LLog.v("Receive Http Response from " + httpRequest.getURI());
-            LLog.v("Http Response Header Line :: " + httpResponse.getStatusLine().toString());
-            for (Header header : httpResponse.getAllHeaders()) {
-                LLog.v("Http Response Header :: " + header.toString());
-            }
-        }
-    }
+    protected abstract Result generateResult();
 
     /**
      * call {@link #cancel()} will cause Exception. Need to catch and return
@@ -187,109 +196,51 @@ public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
 
         // logic/fatal exception, throw it out.
         if (ex != null && ex instanceof UnHandledException) {
-            UnHandledException exception = (UnHandledException) ex;
-            throw exception;
+            throw (UnHandledException) ex;
         }
 
-        // Log response info
-        String errorMsg = null;
+        // generate error message
+        String errorMsg;
         if (ex != null) {
             errorMsg = "Http Connection to %s failed with exception :: " +
                     (!Checker.isEmpty(ex.getMessage()) ? ex.getMessage() : ex.getClass().getName());
 
-        } else if (httpResponse == null) {
+        } else if (responseCode == 0) {
             errorMsg = "Http Connection to %s failed empty response";
 
-        } else if (HttpHelper.isBadHttpStatusCode(httpResponse.getStatusLine().getStatusCode())) {
-            errorMsg = "Http Connection to %s failed with unexcepted http status code :: "
-                    + httpResponse.getStatusLine().getStatusCode();
+        } else if (HttpHelper.isBadHttpStatusCode(responseCode)) {
+            errorMsg = "Http Connection to %s failed with unexpected http status code :: "
+                    + responseCode;
 
-        } else errorMsg = "Http Connection to %s failed with unexcepted Error!";
+        } else errorMsg = "Http Connection to %s failed with unexpected Error!";
 
         LLog.e(errorMsg, ex, url);
 
         // retry
         retries++;
-        if (retries <= RETRY_TIMES) {
-            // Android's implemenration of ThreadSafeClientConnManager keep only 2
-            // connection in pool. Need to abort failed httpRequest before retry.
-            try {
-                if (httpRequest != null) httpRequest.abort();
-            } catch (Throwable e) {
-                // abort failed, skip retry
-                LLog.w("Abort http connection failed : %s", url);
-                return null;
-            }
-            LLog.e("Retries Count :: " + retries);
-            LLog.d("ConnectionInPool=%d",
-                    ((ThreadSafeClientConnManager) getHttpClient().
-                            getConnectionManager()).getConnectionsInPool());
+        if (retries <= config.maxRetryCount) {
             return run();
         }
 
-        if (ex != null)
+        if (ex != null) {
             setErrorDetails(new HttpTaskException(
                     HttpTaskException.HTTP_ERR_CODE_CONNECTION_ERROR, ex));
 
-        else if (httpResponse == null)
+        } else if (responseCode == 0) {
             setErrorDetails(new HttpTaskException(
                     HttpTaskException.HTTP_ERR_CODE_SERVER_ERROR));
 
-        else if (HttpHelper.isBadHttpStatusCode(httpResponse.getStatusLine().getStatusCode())) {
+        } else if (HttpHelper.isBadHttpStatusCode(responseCode)) {
             // server reply status error, for example 404, 403
-            setErrorDetails(new HttpTaskException(
-                    httpResponse.getStatusLine().getStatusCode()));
+            setErrorDetails(new HttpTaskException(responseCode));
 
         } else {
-            // unknow error, shouldn't reach here
+            // unknown error, shouldn't reach here
             setErrorDetails(new HttpTaskException(
                     HttpTaskException.HTTP_ERR_CODE_UNKNOWN_ERROR));
         }
 
         return null;
-    }
-
-    //*************************************************************************
-    //  Inner Class Definition
-    //*************************************************************************
-
-    private static class GZipResponseInterceptor implements HttpResponseInterceptor {
-
-        @Override
-        public void process(final HttpResponse response,
-                            final HttpContext context) throws HttpException, IOException {
-            HttpEntity entity = response.getEntity();
-            if (entity == null) return;
-            Header ceheader = entity.getContentEncoding();
-            if (ceheader == null) return;
-            HeaderElement[] codecs = ceheader.getElements();
-            for (HeaderElement codec : codecs) {
-                if (codec.getName().equalsIgnoreCase("gzip")) {
-                    response.setEntity(new GzipDecompressingEntity(response.getEntity()));
-                    return;
-                }
-            }
-        }
-    }
-
-    private static class GzipDecompressingEntity extends HttpEntityWrapper {
-
-        public GzipDecompressingEntity(final HttpEntity entity) {
-            super(entity);
-        }
-
-        @Override
-        public InputStream getContent() throws IOException, IllegalStateException {
-            // the wrapped entity's getContent() decides about repeatability
-            InputStream wrappedin = wrappedEntity.getContent();
-            return new GZIPInputStream(wrappedin);
-        }
-
-        @Override
-        public long getContentLength() {
-            // length of ungzipped content is not known
-            return -1;
-        }
     }
 
 }

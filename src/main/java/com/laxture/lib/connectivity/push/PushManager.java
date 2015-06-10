@@ -9,7 +9,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.SparseArray;
 
-import com.laxture.lib.util.ArrayUtil;
+import com.laxture.lib.util.CollectionUtil;
 import com.laxture.lib.util.LLog;
 import com.laxture.lib.util.UnHandledException;
 
@@ -138,7 +138,7 @@ public class PushManager extends Thread {
                 // Copy a safe array of PushListeners to notify, since SparesArray
                 // is not thread-safe
                 SparseArray<PushListener> tmpListeners =
-                        ArrayUtil.cloneSparseArray(mPushListeners);
+                        CollectionUtil.cloneSparseArray(mPushListeners);
 
                 for (int i=tmpListeners.size()-1; i>=0; i--) {
                     PushListener listener = tmpListeners.get(tmpListeners.keyAt(i));

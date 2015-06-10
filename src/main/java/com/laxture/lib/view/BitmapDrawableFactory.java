@@ -82,7 +82,6 @@ public abstract class BitmapDrawableFactory implements Cloneable {
                 && Checker.isEmpty(mBytes)
                 && Checker.isEmpty(mAssetPath)) {
             LLog.e("Bitmap source is not set.");
-//            throw new IllegalArgumentException("Bitmap source is not set.");
             return null;
         }
 
