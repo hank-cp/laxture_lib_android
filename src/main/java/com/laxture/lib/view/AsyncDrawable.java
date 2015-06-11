@@ -6,7 +6,7 @@ import com.laxture.lib.cache.storage.ContentStorage;
 import com.laxture.lib.connectivity.http.ImageDownloadTask;
 import com.laxture.lib.connectivity.http.ImageDownloadTask.ImageInfo;
 import com.laxture.lib.task.TaskException;
-import com.laxture.lib.task.TaskListener;
+import com.laxture.lib.task.TaskListener.*;
 import com.laxture.lib.task.TaskManager;
 import com.laxture.lib.util.BitmapUtil;
 import com.laxture.lib.util.Checker;
@@ -14,7 +14,8 @@ import com.laxture.lib.util.LLog;
 
 import java.io.File;
 
-public class AsyncDrawable extends BitmapDrawable implements TaskListener<ImageInfo> {
+public class AsyncDrawable extends BitmapDrawable implements
+        TaskFinishedListener<ImageInfo>, TaskFailedListener<ImageInfo> {
 
     public interface OnQQImageDownloadedListener {
         public void onQQImageDownloaded(ImageInfo imageInfo);
@@ -81,7 +82,8 @@ public class AsyncDrawable extends BitmapDrawable implements TaskListener<ImageI
                 task.setId(mUrl);
                 task.setTag("native");
             }
-            task.addTaskListener(this);
+            task.addFinishedListener(this);
+            task.addFailedListener(this);
             TaskManager.push(task);
         } 
     }
@@ -94,15 +96,6 @@ public class AsyncDrawable extends BitmapDrawable implements TaskListener<ImageI
     //*************************************************************************
     //  Task Callback
     //*************************************************************************
-
-    @Override
-    public void onTaskStart() {} // do nothing
-
-    @Override
-    public void onTaskProgressUpdated(int totalSize, int currentSize) {} // do nothing
-
-    @Override
-    public void onTaskCancelled(ImageInfo result) {} // do nothing
 
     @Override
     public void onTaskFinished(final ImageInfo result) {

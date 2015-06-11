@@ -14,7 +14,7 @@ import com.laxture.lib.cache.storage.ContentStorage;
 import com.laxture.lib.connectivity.http.ImageDownloadTask;
 import com.laxture.lib.connectivity.http.ImageDownloadTask.ImageInfo;
 import com.laxture.lib.task.TaskException;
-import com.laxture.lib.task.TaskListener;
+import com.laxture.lib.task.TaskListener.*;
 import com.laxture.lib.task.TaskManager;
 import com.laxture.lib.util.BitmapUtil;
 import com.laxture.lib.util.BitmapUtil.ResizeMode;
@@ -23,7 +23,9 @@ import com.laxture.lib.util.LLog;
 
 import java.io.File;
 
-public class AsyncImageAdapter implements TaskListener<ImageInfo> {
+public class AsyncImageAdapter implements TaskProgressUpdatedListener,
+        TaskFinishedListener<ImageInfo>, TaskCancelledListener<ImageInfo>,
+        TaskFailedListener<ImageInfo> {
 
     public static final boolean DEBUG = false;
 
@@ -201,7 +203,10 @@ public class AsyncImageAdapter implements TaskListener<ImageInfo> {
                     task.setModifyTimestamp(mModifyTimestamp);
                 }
             }
-            task.addTaskListener(this);
+            task.addProgressUpdatedListener(this);
+            task.addFinishedListener(this);
+            task.addCancelledListener(this);
+            task.addFailedListener(this);
             task.setTag(taskTag);
             TaskManager.push(task);
             mStatus = Status.Loading;
@@ -279,9 +284,6 @@ public class AsyncImageAdapter implements TaskListener<ImageInfo> {
     //*************************************************************************
     //  Task Callback
     //*************************************************************************
-
-    @Override
-    public void onTaskStart() {} // do nothing
 
     @Override
     public void onTaskProgressUpdated(int totalSize, int currentSize) {

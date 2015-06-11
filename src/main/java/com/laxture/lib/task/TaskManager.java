@@ -202,7 +202,7 @@ public abstract class TaskManager {
      * current UI shall response.
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private static MyFutureTask reuseTask(AbstractAsyncTask<?> task) {
+    private static MyFutureTask reuseTask(AbstractAsyncTask task) {
         if (Checker.isEmpty(task.getId())) return null;
 
         synchronized (sRunningPool) {
@@ -210,7 +210,7 @@ public abstract class TaskManager {
             for (AbstractAsyncTask<?> runningTask : sRunningPool) {
                 if (!task.getId().equals(runningTask.getId())) continue;
                 // found!
-                runningTask.addAllTaskListeners(task.getTaskListeners());
+                runningTask.cloneTaskListeners(task);
                 return new RunningFutureStub(task);
             }
         }
@@ -220,7 +220,7 @@ public abstract class TaskManager {
             MyFutureTask future = (MyFutureTask) runnable;
             if (!task.getId().equals(future.getTask().getId())) continue;
             // found!
-            future.getTask().addAllTaskListeners(task.getTaskListeners());
+            future.getTask().cloneTaskListeners(task);
             return future;
         }
 

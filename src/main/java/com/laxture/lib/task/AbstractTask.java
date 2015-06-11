@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
+import com.laxture.lib.task.TaskListener.*;
 import com.laxture.lib.util.Checker;
 import com.laxture.lib.util.LLog;
 
@@ -33,13 +34,13 @@ public abstract class AbstractTask<Result> {
     final AtomicBoolean mCancelled = new AtomicBoolean();
     final AtomicBoolean mTaskInvoked = new AtomicBoolean();
 
-    // listener
-    private Set<TaskListener<Result>> mListeners = new HashSet<TaskListener<Result>>();
-    public Set<TaskListener<Result>> getTaskListeners() { return mListeners; }
-
-    // add new listener interface to reduce changes to old code
-    private Set<TaskListener2<Result>> mListeners2 = new HashSet<TaskListener2<Result>>();
-    public Set<TaskListener2<Result>> getTaskListeners2() { return mListeners2; }
+    // listeners
+    private Set<TaskStartListener> mStartListeners = new HashSet<>();
+    private Set<TaskProgressUpdatedListener> mProgressUpdatedListeners = new HashSet<>();
+    private Set<TaskFinishedListener<Result>> mFinishedListeners = new HashSet<TaskFinishedListener<Result>>();
+    private Set<TaskCancelledListener<Result>> mCancelledListeners = new HashSet<TaskCancelledListener<Result>>();
+    private Set<TaskFailedListener> mFailedListeners = new HashSet<>();
+    private Set<TaskDataChangedListener> mDataChangedListeners = new HashSet<>();
 
     // error code
     private TaskException mException;
@@ -79,30 +80,46 @@ public abstract class AbstractTask<Result> {
     // Public/Protected Method
     //*************************************************************************
 
-    public void addTaskListener(TaskListener<Result> callback) {
-        mListeners.add(callback);
+    public void addStartListener(TaskStartListener callback) {
+        mStartListeners.add(callback);
     }
 
-    public void addTaskListener2(TaskListener2<Result> callback) {
-        mListeners2.add(callback);
+    public void addProgressUpdatedListener(TaskProgressUpdatedListener callback) {
+        mProgressUpdatedListeners.add(callback);
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public void addAllTaskListeners(Set listeners) {
-        mListeners.addAll(listeners);
+    public void addFinishedListener(TaskFinishedListener<Result> callback) {
+        mFinishedListeners.add(callback);
     }
 
-    public void removeTaskListener(TaskListener<Result> callback) {
-        mListeners.remove(callback);
+    public void addCancelledListener(TaskCancelledListener<Result> callback) {
+        mCancelledListeners.add(callback);
     }
 
-    public void removeTaskListener2(TaskListener2<Result> callback) {
-        mListeners2.remove(callback);
+    public void addFailedListener(TaskFailedListener callback) {
+        mFailedListeners.add(callback);
+    }
+
+    public void addDataChangedListener(TaskDataChangedListener callback) {
+        mDataChangedListeners.add(callback);
+    }
+
+    public void cloneTaskListeners(AbstractTask<Result> task) {
+        mStartListeners.addAll(task.mStartListeners);
+        mProgressUpdatedListeners.addAll(task.mProgressUpdatedListeners);
+        mFinishedListeners.addAll(task.mFinishedListeners);
+        mCancelledListeners.addAll(task.mCancelledListeners);
+        mFailedListeners.addAll(task.mFailedListeners);
+        mDataChangedListeners.addAll(task.mDataChangedListeners);
     }
 
     public void removeAllTaskListeners() {
-        mListeners.clear();
-        mListeners2.clear();
+        mStartListeners.clear();
+        mProgressUpdatedListeners.clear();
+        mFinishedListeners.clear();
+        mCancelledListeners.clear();
+        mFailedListeners.clear();
+        mDataChangedListeners.clear();
     }
 
     public Handler getMainHandler() {
@@ -285,43 +302,43 @@ public abstract class AbstractTask<Result> {
     //*************************************************************************
 
     public void onTaskStart() {
-        if (mListeners.size() == 0) return;
-        for (final TaskListener<Result> callback : mListeners) {
+        if (Checker.isEmpty(mStartListeners)) return;
+        for (final TaskStartListener callback : mStartListeners) {
             callback.onTaskStart();
         }
     }
 
     public void onTaskProgressUpdate(final int totalSize, final int currentSize) {
-        if (mListeners.size() == 0) return;
-        for (final TaskListener<Result> callback : mListeners) {
+        if (Checker.isEmpty(mProgressUpdatedListeners)) return;
+        for (final TaskProgressUpdatedListener callback : mProgressUpdatedListeners) {
             callback.onTaskProgressUpdated(totalSize, currentSize);
         }
     }
 
     public void onTaskFinished(final Result returnObj) {
-        if (mListeners.size() == 0) return;
-        for (final TaskListener<Result> callback : mListeners) {
+        if (mFinishedListeners.size() == 0) return;
+        for (final TaskFinishedListener<Result> callback : mFinishedListeners) {
             callback.onTaskFinished(returnObj);
         }
     }
 
     public void onTaskCancelled(final Result result) {
-        if (mListeners.size() == 0) return;
-        for (final TaskListener<Result> callback : mListeners) {
+        if (mCancelledListeners.size() == 0) return;
+        for (final TaskCancelledListener<Result> callback : mCancelledListeners) {
             callback.onTaskCancelled(result);
         }
     }
 
     public void onTaskFailed(final Result result, final TaskException ex) {
-        if (mListeners.size() == 0) return;
-        for (final TaskListener<Result> callback : mListeners) {
+        if (mFailedListeners.size() == 0) return;
+        for (final TaskFailedListener<Result> callback : mFailedListeners) {
             callback.onTaskFailed(result, ex);
         }
     }
 
     public void onTaskDataChanged(final int dataIndentifier, final Object changedData) {
-        if (mListeners2.size() == 0) return;
-        for (final TaskListener2<Result> callback : mListeners2) {
+        if (mDataChangedListeners.size() == 0) return;
+        for (final TaskDataChangedListener callback : mDataChangedListeners) {
             callback.onTaskDataChanged(dataIndentifier, changedData);
         }
     }
