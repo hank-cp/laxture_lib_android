@@ -33,8 +33,8 @@ public abstract class TaskManager {
      * An {@link Executor} that can be used to execute tasks in queue.
      */
     private static final ThreadPoolExecutor QUEUE_EXECUTOR =
-            new ManagedThreadPoolExecutor(RuntimeContext.getConfig().getTaskQueueCosumingLimit(),
-                    RuntimeContext.getConfig().getTaskQueueCosumingLimit(),
+            new ManagedThreadPoolExecutor(RuntimeContext.getConfig().getTaskQueueConsumingLimit(),
+                    RuntimeContext.getConfig().getTaskQueueConsumingLimit(),
                     KEEP_ALIVE, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
                     sThreadFactory);
 

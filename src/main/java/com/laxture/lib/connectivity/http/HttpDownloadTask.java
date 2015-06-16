@@ -1,13 +1,8 @@
 package com.laxture.lib.connectivity.http;
 
-import com.laxture.lib.cache.storage.StorageCacheManageThread;
-import com.laxture.lib.cache.storage.StorageCacheRecord;
 import com.laxture.lib.util.Checker;
 import com.laxture.lib.util.LLog;
 import com.laxture.lib.util.StreamUtil;
-
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -76,16 +71,6 @@ public abstract class HttpDownloadTask<Result> extends HttpTask<Result> {
         return connection;
     }
 
-    protected void addCache(String cacheId, String lastModified) {
-        StorageCacheRecord cRecord = new StorageCacheRecord();
-        cRecord.url = cacheId;
-        cRecord.path = getDownloadFile().getAbsolutePath();
-        // 下载文件后更新缓存表的lastModify
-        cRecord.lastModify = lastModified;
-        cRecord.lastUsed = System.currentTimeMillis();
-        StorageCacheManageThread.getInstance().InsertDownloadStorageCache(cRecord);
-    }
-
     @Override
     protected void processResponse(InputStream inputStream) throws IOException {
         super.processResponse(inputStream);
@@ -101,9 +86,9 @@ public abstract class HttpDownloadTask<Result> extends HttpTask<Result> {
         String rangeHeader = connection.getHeaderField("Content-Range");
         String lengthHeader = connection.getHeaderField("Content-Length");
         mContentType = connection.getContentType();
-        if (Checker.isEmpty(rangeHeader)) {
+        if (!Checker.isEmpty(rangeHeader)) {
             mContentLength = Integer.parseInt(rangeHeader.split("/")[1]);
-        } else if (lengthHeader != null) {
+        } else if (!Checker.isEmpty(lengthHeader)) {
             mContentLength = Integer.parseInt(lengthHeader);
         }
 

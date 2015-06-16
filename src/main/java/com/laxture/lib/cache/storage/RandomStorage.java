@@ -21,12 +21,6 @@ public class RandomStorage implements Storage {
         return mFile;
     }
 
-    public HashCacheStorage convertToHashCacheStorage(String hashKey) {
-        HashCacheStorage cacheFile = new HashCacheStorage(hashKey);
-        boolean ret = mFile.renameTo(cacheFile.getFile());
-        return ret ? cacheFile : null;
-    }
-
     /**
      * Override this method to speicify storage location
      *

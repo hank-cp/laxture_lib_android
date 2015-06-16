@@ -1,7 +1,5 @@
 package com.laxture.lib.view;
 
-import java.io.File;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -11,7 +9,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.laxture.lib.R;
-import com.laxture.lib.cache.storage.ContentStorage;
+import com.laxture.lib.cache.storage.CacheStorage;
+
+import java.io.File;
 
 public class AsyncImageView extends ImageView {
 
@@ -49,12 +49,12 @@ public class AsyncImageView extends ImageView {
         getAdapter().setImage(taskTag, imageUrl);
     }
 
-    public void setImage(ContentStorage storage) {
-        getAdapter().setImage(storage);
+    public void setImage(CacheStorage cache) {
+        getAdapter().setImage(cache);
     }
 
-    public void setImage(String taskTag, ContentStorage storage) {
-        getAdapter().setImage(taskTag, storage);
+    public void setImage(String taskTag, CacheStorage cache) {
+        getAdapter().setImage(taskTag, cache);
     }
 
     public void setImage(String cacheId, String taskTag, File localImageFile, String imageUrl, File downloadFile) {
@@ -69,6 +69,20 @@ public class AsyncImageView extends ImageView {
      */
     public void installProgressView(Activity activity) {
         ProgressBar progressBar = (ProgressBar) activity.findViewById(mProgressViewResId);
+        if (progressBar != null) {
+            getAdapter().setProgressView(progressBar);
+            progressBar.bringToFront();
+        }
+    }
+
+    /**
+     * Call this method in {@link Activity}.onCreate() or {@link Fragment}.onCreateView()
+     * to setup ProgressView that specified in layout xml.
+     *
+     * @param fragment
+     */
+    public void installProgressView(Fragment fragment) {
+        ProgressBar progressBar = (ProgressBar) fragment.getActivity().findViewById(mProgressViewResId);
         if (progressBar != null) {
             getAdapter().setProgressView(progressBar);
             progressBar.bringToFront();

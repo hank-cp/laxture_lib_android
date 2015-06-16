@@ -3,31 +3,24 @@ package com.laxture.lib;
 import com.laxture.lib.util.DateUtil;
 
 /**
- * This Class is designated for two purposes:
- * <ol>
- * <li>Hold ApplicationContext and package information. It could match to App
- * projects that include LaxtureLib project automatically.  </li>
- * <li>Allow App projects to specify configurations that used in LaxtureLib.</li>
- * </ol>
- * <br/>
- *
- * NOTE: Concrete RuntimeContext class must be put under root package folder as
- * described as in AndroidManifest.xml.
+ * Config arguments used in this library.
  */
 public class RuntimeConfig {
 
     private String storageHomeName;
     private boolean noMedia;
-    private int taskQueueCosumingLimit;
-    private long cacheFolderCapacity;
-    private long getCacheClearIntervalTime;
+    private int taskQueueConsumingLimit;
+    private long cacheStorageMaxCapacity;
+    private long recycleCacheInterval;
+    private int maxCaptureImageSize;
 
     public RuntimeConfig(Builder builder) {
         storageHomeName = builder.storageHomeName;
         noMedia = builder.noMedia;
-        taskQueueCosumingLimit = builder.taskQueueCosumingLimit;
-        cacheFolderCapacity = builder.cacheFolderCapacity;
-        getCacheClearIntervalTime = builder.getCacheClearIntervalTime;
+        taskQueueConsumingLimit = builder.taskQueueConsumingLimit;
+        cacheStorageMaxCapacity = builder.cacheFolderCapacity;
+        recycleCacheInterval = builder.getCacheClearIntervalTime;
+        maxCaptureImageSize = builder.maxCaptureImageSize;
     }
 
 
@@ -39,16 +32,20 @@ public class RuntimeConfig {
         return noMedia;
     }
 
-    public int getTaskQueueCosumingLimit() {
-        return taskQueueCosumingLimit;
+    public int getTaskQueueConsumingLimit() {
+        return taskQueueConsumingLimit;
     }
 
-    public long getCacheFolderCapacity() {
-        return cacheFolderCapacity;
+    public long getCacheStorageMaxCapacity() {
+        return cacheStorageMaxCapacity;
     }
 
-    public long getGetCacheClearIntervalTime() {
-        return getCacheClearIntervalTime;
+    public long getRecycleCacheInterval() {
+        return recycleCacheInterval;
+    }
+
+    public int getMaxCaptureImageSize() {
+        return maxCaptureImageSize;
     }
 
     //*************************************************************************
@@ -58,9 +55,10 @@ public class RuntimeConfig {
     public static class Builder {
         private String storageHomeName = "laxture";
         private boolean noMedia = true;
-        private int taskQueueCosumingLimit = 5;
+        private int taskQueueConsumingLimit = 5;
         private long cacheFolderCapacity = 100 * 1024 * 1024;
         private long getCacheClearIntervalTime = DateUtil.DAY_MILLIS * 7;
+        private int maxCaptureImageSize = 1024;
 
         public void setStorageHomeName(String storageHomeName) {
             this.storageHomeName = storageHomeName;
@@ -70,8 +68,8 @@ public class RuntimeConfig {
             this.noMedia = noMedia;
         }
 
-        public void setTaskQueueCosumingLimit(int taskQueueCosumingLimit) {
-            this.taskQueueCosumingLimit = taskQueueCosumingLimit;
+        public void setTaskQueueConsumingLimit(int taskQueueConsumingLimit) {
+            this.taskQueueConsumingLimit = taskQueueConsumingLimit;
         }
 
         public void setCacheFolderCapacity(long cacheFolderCapacity) {
@@ -80,6 +78,10 @@ public class RuntimeConfig {
 
         public void setGetCacheClearIntervalTime(long getCacheClearIntervalTime) {
             this.getCacheClearIntervalTime = getCacheClearIntervalTime;
+        }
+
+        public void setMaxCaptureImageSize(int maxCaptureImageSize) {
+            this.maxCaptureImageSize = maxCaptureImageSize;
         }
     }
 }

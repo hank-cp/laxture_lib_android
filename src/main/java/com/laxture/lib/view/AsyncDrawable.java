@@ -2,11 +2,13 @@ package com.laxture.lib.view;
 
 import android.graphics.drawable.BitmapDrawable;
 
-import com.laxture.lib.cache.storage.ContentStorage;
+import com.laxture.lib.cache.storage.CacheStorage;
+import com.laxture.lib.cache.storage.CacheStorageManager;
 import com.laxture.lib.connectivity.http.ImageDownloadTask;
 import com.laxture.lib.connectivity.http.ImageDownloadTask.ImageInfo;
 import com.laxture.lib.task.TaskException;
-import com.laxture.lib.task.TaskListener.*;
+import com.laxture.lib.task.TaskListener.TaskFailedListener;
+import com.laxture.lib.task.TaskListener.TaskFinishedListener;
 import com.laxture.lib.task.TaskManager;
 import com.laxture.lib.util.BitmapUtil;
 import com.laxture.lib.util.Checker;
@@ -56,13 +58,13 @@ public class AsyncDrawable extends BitmapDrawable implements
     }
 
     public void loadDrawable() {
-        ContentStorage cacheStorage = new ContentStorage(null, mUrl);
-        mDownloadFile = cacheStorage.getCacheFile();
+        CacheStorage cache = CacheStorageManager.getInstance().getCache(mUrl);
+        mDownloadFile = cache.getCacheFile();
 
         // try to load from local imageFile
         if (hasLocalCache(mDownloadFile)) {
             if (DEBUG) LLog.v("Found image file %s", mDownloadFile);
-            setDrawable(mUrl, cacheStorage.getFile());
+            setDrawable(mUrl, cache.getFile());
             return;
         }
 

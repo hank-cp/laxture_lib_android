@@ -286,5 +286,8 @@ public class FileUtil {
         return file.getAbsolutePath().substring(dir.getAbsolutePath().length());
     }
 
+    public static boolean prepareParentDir(File file) {
+        return file.getParentFile().exists() || file.getParentFile().mkdirs();
+    }
 
 }

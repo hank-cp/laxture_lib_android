@@ -8,7 +8,7 @@ import android.util.AttributeSet;
 import android.widget.ProgressBar;
 
 import com.laxture.lib.R;
-import com.laxture.lib.cache.storage.ContentStorage;
+import com.laxture.lib.cache.storage.CacheStorage;
 
 import java.io.File;
 
@@ -57,12 +57,12 @@ public class AsyncTouchImageView extends TouchImageView {
         getAdapter().setImage(taskTag, imageUrl);
     }
 
-    public void setImage(ContentStorage storage) {
-        getAdapter().setImage(storage);
+    public void setImage(CacheStorage cache) {
+        getAdapter().setImage(cache);
     }
 
-    public void setImage(String taskTag, ContentStorage storage) {
-        getAdapter().setImage(taskTag, storage);
+    public void setImage(String taskTag, CacheStorage cache) {
+        getAdapter().setImage(taskTag, cache);
     }
 
     public void setImage(String cacheId, String taskTag, File localImageFile, String imageUrl, File downloadFile) {

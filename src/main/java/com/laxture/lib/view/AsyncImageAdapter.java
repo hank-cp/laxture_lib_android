@@ -10,11 +10,15 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import com.laxture.lib.cache.storage.ContentStorage;
+import com.laxture.lib.cache.storage.CacheStorage;
+import com.laxture.lib.cache.storage.CacheStorageManager;
 import com.laxture.lib.connectivity.http.ImageDownloadTask;
 import com.laxture.lib.connectivity.http.ImageDownloadTask.ImageInfo;
 import com.laxture.lib.task.TaskException;
-import com.laxture.lib.task.TaskListener.*;
+import com.laxture.lib.task.TaskListener.TaskCancelledListener;
+import com.laxture.lib.task.TaskListener.TaskFailedListener;
+import com.laxture.lib.task.TaskListener.TaskFinishedListener;
+import com.laxture.lib.task.TaskListener.TaskProgressUpdatedListener;
 import com.laxture.lib.task.TaskManager;
 import com.laxture.lib.util.BitmapUtil;
 import com.laxture.lib.util.BitmapUtil.ResizeMode;
@@ -129,17 +133,17 @@ public class AsyncImageAdapter implements TaskProgressUpdatedListener,
 
     public void setImage(String taskTag, String imageUrl) {
         if (Checker.isEmpty(imageUrl))
-            throw new IllegalArgumentException("image url cannot be empty");
-        ContentStorage cacheStorage = new ContentStorage(null, imageUrl);
+            throw new IllegalArgumentException("image key cannot be empty");
+        CacheStorage cacheStorage = CacheStorageManager.getInstance().getCache(imageUrl);
         setImage(imageUrl, taskTag, cacheStorage.getFile(), imageUrl, cacheStorage.getCacheFile());
     }
 
-    public void setImage(ContentStorage storage) {
-        setImage(null, storage);
+    public void setImage(CacheStorage cache) {
+        setImage(null, cache);
     }
 
-    public void setImage(String taskTag, ContentStorage storage) {
-        if (storage == null) {
+    public void setImage(String taskTag, CacheStorage cache) {
+        if (cache == null) {
             getBitmapDrawableFactory().setCacheId(null);
             getBitmapDrawableFactory().setFile(null);
             getBitmapDrawableFactory().setBytes(null);
@@ -149,10 +153,10 @@ public class AsyncImageAdapter implements TaskProgressUpdatedListener,
 
             } else setLoadingImage();
         } else {
-            String cacheId = !Checker.isEmpty(storage.url) ? storage.url
-                           : storage.getFile() != null     ? storage.getFile().getAbsolutePath()
-                                                           : "INVALID_CONTENT_STORAGE";
-            setImage(cacheId, taskTag, storage.getFile(), storage.url, storage.getCacheFile());
+            String cacheId = !Checker.isEmpty(cache.getKey()) ? cache.getKey()
+                             : cache.getFile() != null        ? cache.getFile().getAbsolutePath()
+                                                              : "INVALID_CONTENT_STORAGE";
+            setImage(cacheId, taskTag, cache.getFile(), cache.getKey(), cache.getCacheFile());
         }
     }
 
@@ -212,7 +216,7 @@ public class AsyncImageAdapter implements TaskProgressUpdatedListener,
             mStatus = Status.Loading;
             if (mProgressView != null) mProgressView.setVisibility(View.VISIBLE);
 
-        // request url is not given, display the failed image
+        // request key is not given, display the failed image
         } else if (mFailedResId != 0) {
             setDrawableRes(mFailedResId);
             mStatus = Status.Failed;
@@ -307,7 +311,7 @@ public class AsyncImageAdapter implements TaskProgressUpdatedListener,
         }
 
         // update ImageView with latest content. It's possible that multiple tasks
-        // with modified checking (304) for same url. Later task might not update
+        // with modified checking (304) for same key. Later task might not update
         // content because server return zero content (304). So here need to update
         // ImageView no matter server return valid content or not (onTaskFinished)
         setBitmap(result.cacheId, result.downloadedFile);
@@ -351,7 +355,7 @@ public class AsyncImageAdapter implements TaskProgressUpdatedListener,
     }
 
     public interface OnImageDownloadedListener {
-        public void onImageDownloaded(ImageInfo imageInfo);
+        void onImageDownloaded(ImageInfo imageInfo);
     }
 
 }

@@ -1,5 +1,7 @@
 package com.laxture.lib.connectivity.http;
 
+import com.laxture.lib.cache.storage.CacheStorage;
+import com.laxture.lib.cache.storage.CacheStorageManager;
 import com.laxture.lib.util.BitmapUtil;
 import com.laxture.lib.util.Checker;
 import com.laxture.lib.util.LLog;
@@ -48,7 +50,8 @@ public class ImageDownloadTask extends HttpDownloadTask<ImageDownloadTask.ImageI
         imageInfo.cacheId = mCacheId;
         String lastModified = connection.getHeaderField("Last-Modified");
         if (!Checker.isEmpty(lastModified)) imageInfo.lastModify = lastModified;
-        addCache(url, lastModified);
+        CacheStorage cache = CacheStorageManager.getInstance().getCache(url);
+        if (cache != null) cache.setLastModify(lastModified);
         return imageInfo;
     }
 

@@ -18,7 +18,7 @@ import java.util.Map;
 
 public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
 
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     int retries;
 

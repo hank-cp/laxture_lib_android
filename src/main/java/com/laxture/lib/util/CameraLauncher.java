@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
 import com.laxture.lib.R;
+import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.cache.men.BitmapCache;
 
 public class CameraLauncher {
@@ -48,7 +49,7 @@ public class CameraLauncher {
         mWidthLimit = widthLimit;
     }
     public int getWidthLimit() {
-        return mWidthLimit > 0 ? mWidthLimit : ResourceUtil.UPP_SIZE_WIDTH_MAX;
+        return mWidthLimit > 0 ? mWidthLimit : RuntimeContext.getConfig().getMaxCaptureImageSize();
     }
 
     private int mHeightLimit;
@@ -56,7 +57,7 @@ public class CameraLauncher {
         mHeightLimit = heightLimit;
     }
     public int getHeightLimit() {
-        return mHeightLimit > 0 ? mHeightLimit : ResourceUtil.UPP_SIZE_HEIGHT_MAX;
+        return mHeightLimit > 0 ? mHeightLimit : RuntimeContext.getConfig().getMaxCaptureImageSize();
     }
 
     private int mQuality;
