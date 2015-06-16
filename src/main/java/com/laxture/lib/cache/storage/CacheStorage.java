@@ -32,7 +32,7 @@ public class CacheStorage implements Storage {
      *
      * @param key
      */
-    public CacheStorage(String key) {
+    CacheStorage(String key) {
         if (Checker.isEmpty(key))
             throw new IllegalArgumentException("cache key cannot be empty");
         mKey = key;
@@ -46,7 +46,7 @@ public class CacheStorage implements Storage {
      * @param key
      * @param localPath
      */
-    public CacheStorage(String key, String localPath) {
+    CacheStorage(String key, String localPath) {
         if (Checker.isEmpty(key) && Checker.isEmpty(localPath))
             throw new IllegalArgumentException("cache key cannot be empty");
         mKey = key;

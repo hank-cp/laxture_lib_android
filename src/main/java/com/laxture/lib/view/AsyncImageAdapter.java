@@ -40,8 +40,8 @@ public class AsyncImageAdapter implements TaskProgressUpdatedListener,
     public Status getStatus() { return mStatus; }
 
     private ImageView mImageView;
-
     private File mLoadingImageFile;
+    private String mLastModified;
 
     /**
      * This image file will be shown during download
@@ -81,11 +81,6 @@ public class AsyncImageAdapter implements TaskProgressUpdatedListener,
     private ResizeMode mResizeMode = ResizeMode.Fill;
     public void setResizeMode(ResizeMode value) {
         mResizeMode = value;
-    }
-
-    private String mModifyTimestamp;
-    public void setModifyTimestamp(String value) {
-        mModifyTimestamp = value;
     }
 
     public static final int DENSITY_DEFAULT = -1;
@@ -135,6 +130,7 @@ public class AsyncImageAdapter implements TaskProgressUpdatedListener,
         if (Checker.isEmpty(imageUrl))
             throw new IllegalArgumentException("image key cannot be empty");
         CacheStorage cacheStorage = CacheStorageManager.getInstance().getCache(imageUrl);
+        mLastModified = cacheStorage.getLastModify();
         setImage(imageUrl, taskTag, cacheStorage.getFile(), imageUrl, cacheStorage.getCacheFile());
     }
 
@@ -150,12 +146,13 @@ public class AsyncImageAdapter implements TaskProgressUpdatedListener,
             // storage is not set, reset ImageView
             if (mFailedResId != 0) {
                 setDrawableRes(mFailedResId);
-
             } else setLoadingImage();
+
         } else {
             String cacheId = !Checker.isEmpty(cache.getKey()) ? cache.getKey()
                              : cache.getFile() != null        ? cache.getFile().getAbsolutePath()
                                                               : "INVALID_CONTENT_STORAGE";
+            mLastModified = cache.getLastModify();
             setImage(cacheId, taskTag, cache.getFile(), cache.getKey(), cache.getCacheFile());
         }
     }
@@ -174,7 +171,7 @@ public class AsyncImageAdapter implements TaskProgressUpdatedListener,
             setBitmap(cacheId, localImageFile);
 
             // no need to check update
-            if (Checker.isEmpty(mModifyTimestamp)) {
+            if (Checker.isEmpty(mLastModified)) {
                 mStatus = Status.Finished;
                 if (DEBUG) LLog.v("Found image file %s", localImageFile);
                 return;
@@ -204,7 +201,7 @@ public class AsyncImageAdapter implements TaskProgressUpdatedListener,
                 // set modify timestamp only if local cache file is still there, in case
                 // user delete cache folder manually.
                 if (hasLocalCache(localImageFile)) {
-                    task.setModifyTimestamp(mModifyTimestamp);
+                    task.setLastModified(mLastModified);
                 }
             }
             task.addProgressUpdatedListener(this);
@@ -306,7 +303,7 @@ public class AsyncImageAdapter implements TaskProgressUpdatedListener,
 
         // if server retrieve valid content, and request for modified checking (304),
         // flush cache with latest image.
-        if (result.contentLength > 0 && !Checker.isEmpty(mModifyTimestamp)) {
+        if (result.contentLength > 0 && !Checker.isEmpty(mLastModified)) {
             getBitmapDrawableFactory().setFlushCache(true);
         }
 
@@ -318,7 +315,7 @@ public class AsyncImageAdapter implements TaskProgressUpdatedListener,
 
         mStatus = Status.Finished;
         hideProgressView();
-        mModifyTimestamp = null;
+        mLastModified = null;
 
         if (mOnImageDownloadedListener != null) {
             mOnImageDownloadedListener.onImageDownloaded(result);
@@ -329,7 +326,7 @@ public class AsyncImageAdapter implements TaskProgressUpdatedListener,
     public void onTaskCancelled(ImageInfo result) {
         mStatus = Status.Failed;
         hideProgressView();
-        mModifyTimestamp = null;
+        mLastModified = null;
     }
 
     @Override
@@ -343,7 +340,7 @@ public class AsyncImageAdapter implements TaskProgressUpdatedListener,
         }
 
         hideProgressView();
-        mModifyTimestamp = null;
+        mLastModified = null;
     }
 
     private void hideProgressView() {

@@ -28,9 +28,9 @@ public abstract class HttpDownloadTask<Result> extends HttpTask<Result> {
     private long mDownloadedLength;
     private File mTempFile;
 
-    private String mModifyTimestamp;
-    public void setModifyTimestamp(String value) {
-        mModifyTimestamp = value;
+    private String mLastModified;
+    public void setLastModified(String value) {
+        mLastModified = value;
     }
 
     public HttpDownloadTask(String url, File downloadFile) {
@@ -59,8 +59,8 @@ public abstract class HttpDownloadTask<Result> extends HttpTask<Result> {
     protected HttpURLConnection createConnection(String url) throws IOException {
         HttpURLConnection connection = super.createConnection(url);
 
-        if (!Checker.isEmpty(mModifyTimestamp)) {
-            connection.setRequestProperty("If-Modified-Since", mModifyTimestamp);
+        if (!Checker.isEmpty(mLastModified)) {
+            connection.setRequestProperty("If-Modified-Since", mLastModified);
         }
 
         if (!Checker.isEmpty(mTempFile)) {
