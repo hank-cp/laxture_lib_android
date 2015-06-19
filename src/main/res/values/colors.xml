@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!-- General -->
+    <color name="transparent">#00FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="red">#FF0000</color>
+    <color name="green">#00FF00</color>
+    <color name="blue">#0000FF</color>
+    <color name="indigo">#00FFFF</color>
+    <color name="yellow">#FFFF00</color>
+    <color name="purple">#FF00FF</color>
+    <color name="lightGray">#ff909090</color>
+
     <!-- Dialog -->
     <color name="bg_dialog_body">#F5F5F5</color>
     <color name="bg_dialog_header">#43ADBB</color>
@@ -14,4 +27,5 @@
     <color name="tabMedium">#2B2B2B</color>
     <color name="tabDark">#000000</color>
     <color name="tabTransparent">#10ffffff</color>
+
 </resources>
