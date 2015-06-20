@@ -2,7 +2,8 @@ package com.laxture.lib.util;
 
 import android.util.SparseArray;
 
-import com.google.gson.JsonArray;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.Collection;
@@ -70,8 +71,13 @@ public final class Checker {
         return date == null || date.getTime() == 0;
     }
 
-    public static boolean isEmpty(JsonArray array){
-        return array==null || array.size()==0;
+
+    public static boolean isEmpty(JSONObject json) {
+        return json == null || json.length() == 0;
+    }
+
+    public static boolean isEmpty(JSONArray json) {
+        return json == null || json.length() == 0;
     }
 
 }

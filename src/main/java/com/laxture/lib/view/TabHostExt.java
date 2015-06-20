@@ -21,10 +21,10 @@ public class TabHostExt extends TabHost {
 
     @Override
     public void setCurrentTab(int index) {
-        super.setCurrentTab(index);
-
         if (mOnTabClickListener != null)
             mOnTabClickListener.onTabClick(index);
+
+        super.setCurrentTab(index);
     }
 
     public interface OnTabClickListener {

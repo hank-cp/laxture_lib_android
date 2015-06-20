@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import android.app.Application;
+import android.content.ContentResolver;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -148,6 +149,10 @@ public class RuntimeContext {
 
     public static String getString(int resId, Object... formatArgs) {
         return getApplication().getString(resId, formatArgs);
+    }
+
+    public static ContentResolver getContentResolver() {
+        return getApplication().getContentResolver();
     }
 
     public static boolean isStorageDisable() {

@@ -1,13 +1,5 @@
 package com.laxture.lib.util;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.util.ArrayList;
-import java.util.Enumeration;
-
 import android.app.Activity;
 import android.content.Context;
 import android.os.Debug;
@@ -16,12 +8,21 @@ import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Pair;
 
+import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.cache.men.BitmapCache;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.ArrayList;
+import java.util.Enumeration;
 
 public class DeviceUtil {
 
-    public static String getIMEICode(Context context) {
-        String imeiCode = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
+    public static String getIMEICode() {
+        String imeiCode = ((TelephonyManager) RuntimeContext.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
         if (Checker.isEmpty(imeiCode)) imeiCode = "100000000000001";
         return imeiCode;
     }
@@ -33,21 +34,21 @@ public class DeviceUtil {
      * ref: http://stackoverflow.com/questions/1972381/how-to-programmatically-get-the-devices-imei-esn-in-android
      * ref: http://stackoverflow.com/questions/2322234/how-to-find-serial-number-of-android-device
      */
-    public static String getUUID(Context context) {
+    public static String getDeviceId() {
         String uuid = null;
         try {
             uuid = Settings.System.getString(
-                    context.getContentResolver(), Settings.Secure.ANDROID_ID);
+                    RuntimeContext.getContentResolver(), Settings.Secure.ANDROID_ID);
         } catch (Exception e) {}
         if ("9774d56d682e549c".equals(uuid))
-            uuid = getIMEICode(context);
+            uuid = getIMEICode();
         if (Checker.isEmpty(uuid)) uuid = "I_AM_EMULATOR";
         return uuid;
     }
 
 
     /**
-     * get local ip, mybe return null
+     * get local ip, maybe return null
      * @return
      */
     public static String getLocalIpAddress() {
@@ -57,7 +58,7 @@ public class DeviceUtil {
                 for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
                     InetAddress inetAddress = enumIpAddr.nextElement();
                     if (!inetAddress.isLoopbackAddress()) {
-                        return inetAddress.getHostAddress().toString();
+                        return inetAddress.getHostAddress();
                     }
                 }
             }
@@ -67,18 +68,18 @@ public class DeviceUtil {
         return "";
     }
 
-    public static String getAllowedLocationProviders(Context context) {
+    public static String getAllowedLocationProviders() {
         return Settings.System.getString(
-                context.getContentResolver(),
+                RuntimeContext.getContentResolver(),
                 Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
     }
 
     // ref: http://stackoverflow.com/questions/5832368/tablet-or-phone-android
-    public static boolean isTabletDevice(Context context) {
+    public static boolean isTabletDevice() {
         if (android.os.Build.VERSION.SDK_INT >= 11) { // honeycomb
             // test screen size, use reflection because isLayoutSizeAtLeast is
             // only available since 11
-            android.content.res.Configuration con = context.getResources().getConfiguration();
+            android.content.res.Configuration con = RuntimeContext.getResources().getConfiguration();
             try {
                 Method mIsLayoutSizeAtLeast = con.getClass().getMethod(
                         "isLayoutSizeAtLeast", int.class);
@@ -162,11 +163,11 @@ public class DeviceUtil {
         return sMetrics;
     }
 
-    public static Pair<Integer, Integer> getDeviceResolution(Context context) {
-        float density = context.getResources().getDisplayMetrics().density;
-        int rawWidth = context.getResources().getDisplayMetrics().widthPixels;
-        int rawHeight = context.getResources().getDisplayMetrics().heightPixels;
-        return new Pair<Integer, Integer>(Math.round(rawWidth/density), Math.round(rawHeight/density));
+    public static Pair<Integer, Integer> getDeviceResolution() {
+        float density = RuntimeContext.getResources().getDisplayMetrics().density;
+        int rawWidth = RuntimeContext.getResources().getDisplayMetrics().widthPixels;
+        int rawHeight = RuntimeContext.getResources().getDisplayMetrics().heightPixels;
+        return new Pair<>(Math.round(rawWidth/density), Math.round(rawHeight/density));
     }
 
     public static void logHeap() {
