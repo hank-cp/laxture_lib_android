@@ -31,7 +31,7 @@ public class SecurityUtil {
                 RuntimeContext.getApplication());
         String secKey = pref.getString(SECURITY_KEY, null); //纯碎为兼容以前版本
         if (secKey == null || secKey.length() < XOR_KEY_MIN_LENGTH) {
-            secKey = DeviceUtil.getIMEICode();
+            secKey = DeviceUtil.getDeviceId();
             pref.edit().putString(SECURITY_KEY, secKey).commit();
         }
         sXORKey = secKey.toCharArray();

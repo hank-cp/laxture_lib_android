@@ -25,7 +25,9 @@ public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
     // request arguments
     public String url;
 
-    protected HashMap<String, String> arguments;
+    public String method = HttpHelper.HTTP_METHOD_GET;
+
+    protected HashMap<String, String> arguments = new HashMap<>();
 
     protected HttpTaskConfig config;
 
@@ -48,32 +50,26 @@ public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
     }
 
     public void addArgument(String key, Object value) {
-        if (arguments == null) arguments = new HashMap<>();
         arguments.put(key, value.toString());
     }
 
     public void addArgument(String key, int value) {
-        if (arguments == null) arguments = new HashMap<>();
         arguments.put(key, Integer.toString(value));
     }
 
     public void addArgument(String key, boolean value) {
-        if (arguments == null) arguments = new HashMap<>();
         arguments.put(key, Boolean.toString(value));
     }
 
     public void addArgument(String key, long value) {
-        if (arguments == null) arguments = new HashMap<>();
         arguments.put(key, Long.toString(value));
     }
 
     public void addArgument(String key, float value) {
-        if (arguments == null) arguments = new HashMap<>();
         arguments.put(key, Float.toString(value));
     }
 
     public void addArgument(String key, double value) {
-        if (arguments == null) arguments = new HashMap<>();
         arguments.put(key, Double.toString(value));
     }
 
@@ -141,23 +137,7 @@ public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
 
     protected HttpURLConnection createConnection(String url) throws IOException {
         String encodedUrl = Uri.encode(url, config.allowedUriChars);
-        HttpURLConnection conn = (HttpURLConnection) new URL(encodedUrl).openConnection();
-        conn.setConnectTimeout(config.connectionTimeout);
-        conn.setReadTimeout(config.socketTimeout);
-        return conn;
-    }
-
-    protected int getRetries() {
-        return retries;
-    }
-
-    protected void sendRequest() throws IOException {
-        if (Checker.isEmpty(arguments)) return;
-
-        // Log request info
-        if (DEBUG) {
-            LLog.v("Requesting Http URL (%s) : %s", connection.getURL(), connection.getRequestMethod());
-        }
+        HttpURLConnection conn;
 
         StringBuilder postData = new StringBuilder();
         for (Map.Entry<String, String> param : arguments.entrySet()) {
@@ -166,16 +146,46 @@ public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
             postData.append('=');
             postData.append(URLEncoder.encode(param.getValue(), "UTF-8"));
         }
-        byte[] postDataBytes = postData.toString().getBytes("UTF-8");
 
-        connection.setRequestMethod(HttpHelper.HTTP_METHOD_POST);
-        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        connection.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
-        connection.setRequestProperty("charset", "utf-8");
-        connection.setInstanceFollowRedirects(false);
-        connection.setDoOutput(true);
-        connection.setUseCaches(false);
-        connection.getOutputStream().write(postDataBytes);
+        if (method.equals(HttpHelper.HTTP_METHOD_POST) && postData.length() > 0) {
+            conn = (HttpURLConnection) new URL(encodedUrl).openConnection();
+            byte[] postDataBytes = postData.toString().getBytes("UTF-8");
+            conn.setRequestMethod(HttpHelper.HTTP_METHOD_POST);
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            conn.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
+            conn.setRequestProperty("charset", "utf-8");
+            conn.setInstanceFollowRedirects(false);
+            conn.setDoOutput(true);
+            conn.setUseCaches(false);
+            conn.getOutputStream().write(postDataBytes);
+
+        } else if (postData.length() > 0) {
+            if (postData.indexOf("?") != -1) {
+                encodedUrl += "?" + postData.toString();
+            } else {
+                encodedUrl += "&" + postData.toString();
+            }
+            conn = (HttpURLConnection) new URL(encodedUrl).openConnection();
+
+        } else {
+            conn = (HttpURLConnection) new URL(encodedUrl).openConnection();
+        }
+
+        conn.setConnectTimeout(config.connectionTimeout);
+        conn.setReadTimeout(config.socketTimeout);
+
+        return conn;
+    }
+
+    protected int getRetries() {
+        return retries;
+    }
+
+    protected void sendRequest() throws IOException {
+        // Log request info
+        if (DEBUG) {
+            LLog.v("Requesting Http URL (%s) : %s", connection.getRequestMethod(), connection.getURL());
+        }
     }
 
     protected void processResponse(InputStream inputStream) throws IOException {

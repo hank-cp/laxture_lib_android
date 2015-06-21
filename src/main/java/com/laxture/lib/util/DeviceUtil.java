@@ -2,12 +2,16 @@ package com.laxture.lib.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Debug;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.provider.SyncStateContract;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Pair;
 
+import com.laxture.lib.PrefKeys;
 import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.cache.men.BitmapCache;
 
@@ -18,13 +22,12 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.UUID;
 
 public class DeviceUtil {
 
     public static String getIMEICode() {
-        String imeiCode = ((TelephonyManager) RuntimeContext.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
-        if (Checker.isEmpty(imeiCode)) imeiCode = "100000000000001";
-        return imeiCode;
+        return ((TelephonyManager) RuntimeContext.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
     }
 
     /**
@@ -35,15 +38,28 @@ public class DeviceUtil {
      * ref: http://stackoverflow.com/questions/2322234/how-to-find-serial-number-of-android-device
      */
     public static String getDeviceId() {
-        String uuid = null;
-        try {
-            uuid = Settings.System.getString(
-                    RuntimeContext.getContentResolver(), Settings.Secure.ANDROID_ID);
-        } catch (Exception e) {}
-        if ("9774d56d682e549c".equals(uuid))
-            uuid = getIMEICode();
-        if (Checker.isEmpty(uuid)) uuid = "I_AM_EMULATOR";
-        return uuid;
+        String deviceId = getIMEICode();
+        if (Checker.isEmpty(deviceId)) {
+            try {
+                deviceId = Settings.System.getString(
+                        RuntimeContext.getContentResolver(), Settings.Secure.ANDROID_ID);
+            } catch (Exception e) {}
+
+            // Android 2.2 bug & emulator
+            if ("9774d56d682e549c".equals(deviceId) || Checker.isEmpty(deviceId)) {
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(
+                        RuntimeContext.getApplication());
+                deviceId = sp.getString(PrefKeys.PREF_KEY_DEVICE_ID, null);
+                if (deviceId == null) {
+                    String newDeviceId = UUID.randomUUID().toString();
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putString(PrefKeys.PREF_KEY_DEVICE_ID, newDeviceId);
+                    editor.commit();
+                    deviceId = newDeviceId;
+                }
+            }
+        }
+        return deviceId;
     }
 
 
