@@ -134,9 +134,9 @@ public abstract class AbstractTask<Result> {
         mMainHandler.post(action);
     }
 
-    public void postDataChanged(int dataIndentifier, Object changedData) {
+    public void postDataChanged(int dataIdentifier, Object changedData) {
         Message.obtain(mMainHandler, MESSAGE_POST_DATA_CHANGED,
-                new TaskMessageBody<Result>(this, dataIndentifier, changedData)).sendToTarget();
+                new TaskMessageBody<Result>(this, dataIdentifier, changedData)).sendToTarget();
     }
 
     //*************************************************************************
