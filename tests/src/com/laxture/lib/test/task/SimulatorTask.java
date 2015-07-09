@@ -28,7 +28,11 @@ public abstract class SimulatorTask extends AbstractAsyncTask<String> {
     public boolean testFail;
 
     public SimulatorTask() {
-        addTaskListener(new DefaultSimulatorCallback());
+        addStartListener(new DefaultSimulatorCallback());
+        addProgressUpdatedListener(new DefaultSimulatorCallback());
+        addFinishedListener(new DefaultSimulatorCallback());
+        addCancelledListener(new DefaultSimulatorCallback());
+        addFailedListener(new DefaultSimulatorCallback());
     }
 
     @Override
@@ -56,7 +60,12 @@ public abstract class SimulatorTask extends AbstractAsyncTask<String> {
         return super.cancel();
     }
 
-    public class DefaultSimulatorCallback implements TaskListener<String> {
+    public class DefaultSimulatorCallback implements
+            TaskListener.TaskStartListener,
+            TaskListener.TaskProgressUpdatedListener,
+            TaskListener.TaskFinishedListener<String>,
+            TaskListener.TaskCancelledListener<String>,
+            TaskListener.TaskFailedListener<String> {
 
         @Override
         public void onTaskStart() {

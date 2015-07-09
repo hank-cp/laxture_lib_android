@@ -118,7 +118,7 @@ public abstract class BitmapDrawableFactory implements Cloneable {
         } else if (mResId > 0) {
             bitmap = BitmapCache.loadBitmap(mResId);
 
-        } else if (Checker.isEmpty(mAssetPath)) {
+        } else if (!Checker.isEmpty(mAssetPath)) {
             if (mDensity > 0) {
                 bitmap = BitmapCache.loadBitmap(mAssetPath, mDensity);
             } else {
