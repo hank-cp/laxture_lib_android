@@ -149,6 +149,7 @@ public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
 
         if (method.equals(HttpHelper.HTTP_METHOD_POST) && postData.length() > 0) {
             conn = (HttpURLConnection) new URL(encodedUrl).openConnection();
+            setHeader(conn);
             byte[] postDataBytes = postData.toString().getBytes("UTF-8");
             conn.setRequestMethod(HttpHelper.HTTP_METHOD_POST);
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
@@ -160,21 +161,29 @@ public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
             conn.getOutputStream().write(postDataBytes);
 
         } else if (postData.length() > 0) {
-            if (postData.indexOf("?") != -1) {
+            if (postData.indexOf("?") == -1) {
                 encodedUrl += "?" + postData.toString();
             } else {
                 encodedUrl += "&" + postData.toString();
             }
             conn = (HttpURLConnection) new URL(encodedUrl).openConnection();
+            setHeader(conn);
 
         } else {
             conn = (HttpURLConnection) new URL(encodedUrl).openConnection();
+            setHeader(conn);
         }
 
         conn.setConnectTimeout(config.connectionTimeout);
         conn.setReadTimeout(config.socketTimeout);
 
         return conn;
+    }
+
+    private void setHeader(HttpURLConnection conn) {
+        for (Map.Entry<String, String> header : config.headers.entrySet()) {
+            conn.setRequestProperty(header.getKey(), header.getValue());
+        }
     }
 
     protected int getRetries() {
