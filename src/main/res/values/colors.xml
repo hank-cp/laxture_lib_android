@@ -11,7 +11,8 @@
     <color name="indigo">#00FFFF</color>
     <color name="yellow">#FFFF00</color>
     <color name="purple">#FF00FF</color>
-    <color name="lightGray">#ff909090</color>
+    <color name="light_gray">#909090</color>
+    <color name="dark_gray">#777777</color>
 
     <!-- Dialog -->
     <color name="bg_dialog_body">#F5F5F5</color>

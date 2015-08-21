@@ -332,4 +332,16 @@ public class WheelDatePicker extends FrameLayout {
         }
     }
 
+    public WheelView getYearWheel() {
+        return mYearWheel;
+    }
+
+    public WheelView getMonthWheel() {
+        return mMonthWheel;
+    }
+
+    public WheelView getDayWheel() {
+        return mDayWheel;
+    }
+
 }

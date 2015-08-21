@@ -1,6 +1,5 @@
 package com.laxture.lib.view.date;
 
-import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 
 import android.app.AlertDialog;
@@ -43,6 +42,10 @@ public class WheelDatePickerDialog extends AlertDialog implements
 
     private WheelDatePicker mTimePicker = null;
 
+    public WheelDatePicker getTimePicker() {
+        return mTimePicker;
+    }
+
     private OnTimeSetListener mCallbackSet = null;
 
     private View.OnClickListener mCallBackCancel = null;
@@ -68,7 +71,6 @@ public class WheelDatePickerDialog extends AlertDialog implements
      * @param callBack How parent is notified.
      * @param dateTime The initial hour.
      */
-
     public WheelDatePickerDialog(Context context, OnTimeSetListener callBack, DateTime dateTime) {
 
         super(context);
@@ -97,8 +99,8 @@ public class WheelDatePickerDialog extends AlertDialog implements
 
     }
 
-    public void setCurrentDate(DateMidnight date) {
-        mTimePicker.setCurrentTime(date.toDateTime());
+    public void setCurrentDate(DateTime date) {
+        mTimePicker.setCurrentTime(date);
     }
 
     public void setStartTime(DateTime startTime) {
