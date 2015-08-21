@@ -12,4 +12,11 @@ public class NumberUtil {
         return new DecimalFormat(pattern).format(num);
     }
 
+    public static int parseInt(String text) {
+        try {
+            return Integer.parseInt(text);
+        } catch (Exception ignored) {}
+        return 0;
+    }
+
 }

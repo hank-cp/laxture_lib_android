@@ -1,0 +1,32 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal|center_vertical"
+    android:layout_marginBottom="10dip"
+    android:layout_marginLeft="10dip"
+    android:layout_marginRight="10dip"
+    android:layout_marginTop="22dip"
+    android:gravity="center" >
+
+    <Button
+        android:id="@+id/btn_dialog_cancel"
+        style="@style/CustomAlertDialogTheme.Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="20dp"
+        android:layout_gravity="center"
+        android:text="@string/cancel" >
+    </Button>
+
+    <Button
+        android:id="@+id/btn_dialog_set"
+        style="@style/CustomAlertDialogTheme.Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="20dp"
+        android:layout_gravity="center"
+        android:text="@string/label_ok" >
+    </Button>
+</LinearLayout>

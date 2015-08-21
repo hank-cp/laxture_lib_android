@@ -61,8 +61,8 @@ public class WheelLunarDatePickerDialog extends AlertDialog implements
         View view = inflater.inflate(R.layout.wheel_lunar_date_picker_dialog, null);
 
         mTimePicker = (WheelLunarDatePicker)view.findViewById(R.id.customDatePicker);
-        mBtnSet = (Button)view.findViewById(R.id.btn_customdate_set);
-        mBtnCancel = (Button)view.findViewById(R.id.btn_customdate_cancel);
+        mBtnSet = (Button)view.findViewById(R.id.btn_dialog_set);
+        mBtnCancel = (Button)view.findViewById(R.id.btn_dialog_cancel);
         mBtnSet.setOnClickListener(this);
         mBtnCancel.setOnClickListener(this);
 

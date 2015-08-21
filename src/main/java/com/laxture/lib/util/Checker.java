@@ -28,6 +28,10 @@ public final class Checker {
         return doubleNum == null || doubleNum == 0;
     }
 
+    public static boolean isPositive(Integer integer) {
+        return integer != 0 && integer > 0;
+    }
+
     public static boolean isEmpty(CharSequence text) {
         return text == null || text.length() <= 0 || "null".equals(text);
     }

@@ -81,12 +81,11 @@ public class WheelDatePickerDialog extends AlertDialog implements
         setIcon(R.drawable.device_access_time);
 
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
         View view = inflater.inflate(R.layout.wheel_date_picker_dialog, null);
 
         mTimePicker = (WheelDatePicker) view.findViewById(R.id.customDatePicker);
-        mBtnSet = (Button)view.findViewById(R.id.btn_customdate_set);
-        mBtnCancel = (Button)view.findViewById(R.id.btn_customdate_cancel);
+        mBtnSet = (Button)view.findViewById(R.id.btn_dialog_set);
+        mBtnCancel = (Button)view.findViewById(R.id.btn_dialog_cancel);
         mBtnSet.setOnClickListener(this);
         mBtnCancel.setOnClickListener(this);
 

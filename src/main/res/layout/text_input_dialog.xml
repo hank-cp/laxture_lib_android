@@ -5,13 +5,15 @@
     android:background="#FFFFFF"
     android:orientation="vertical" >
 
-    <com.laxture.lib.view.date.WheelLunarDatePicker
-        xmlns:DateTimePicker="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/customDatePicker"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/input_text"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
         android:layout_gravity="center"
-        DateTimePicker:textSize="18dp" />
+        android:textSize="20dp"/>
 
     <include layout="@layout/dialog_buttons" />
 
