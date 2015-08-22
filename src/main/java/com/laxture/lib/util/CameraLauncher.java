@@ -196,7 +196,7 @@ public class CameraLauncher {
     }
 
     public interface CameraLauncherListener {
-        public void onImageReady(File imageFile);
+        void onImageReady(File imageFile);
     }
 
 }

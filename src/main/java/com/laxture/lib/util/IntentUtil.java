@@ -158,6 +158,13 @@ public class IntentUtil {
         cr.update(imageUri, values, null, null);
     }
 
+    public static void scanImageMediaStore(File file) {
+        Uri uri = Uri.fromFile(file);
+        Intent scanFileIntent = new Intent(
+                Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
+        RuntimeContext.getApplication().sendBroadcast(scanFileIntent);
+    }
+
     public static Intent getGalleryIntent(Uri uri) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(uri, MIME_IMAGE);
