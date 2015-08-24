@@ -29,6 +29,8 @@ public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
 
     protected HashMap<String, String> arguments = new HashMap<>();
 
+    protected String requestJsonBody;
+
     protected HttpTaskConfig config;
 
     protected HttpURLConnection connection;
@@ -140,19 +142,28 @@ public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
         HttpURLConnection conn;
 
         StringBuilder postData = new StringBuilder();
-        for (Map.Entry<String, String> param : arguments.entrySet()) {
-            if (postData.length() != 0) postData.append('&');
-            postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
-            postData.append('=');
-            postData.append(URLEncoder.encode(param.getValue(), "UTF-8"));
+        if (!Checker.isEmpty(requestJsonBody)) {
+            postData.append(requestJsonBody);
+
+        } else {
+            for (Map.Entry<String, String> param : arguments.entrySet()) {
+                if (postData.length() != 0) postData.append('&');
+                postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
+                postData.append('=');
+                postData.append(URLEncoder.encode(param.getValue(), "UTF-8"));
+            }
         }
 
         if (method.equals(HttpHelper.HTTP_METHOD_POST) && postData.length() > 0) {
+            if (DEBUG) LLog.d("Posting data : "+postData.toString());
+
             conn = (HttpURLConnection) new URL(encodedUrl).openConnection();
             setHeader(conn);
             byte[] postDataBytes = postData.toString().getBytes("UTF-8");
             conn.setRequestMethod(HttpHelper.HTTP_METHOD_POST);
-            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            conn.setRequestProperty("Content-Type", !Checker.isEmpty(requestJsonBody)
+                    ? "application/json"
+                    : "application/x-www-form-urlencoded");
             conn.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
             conn.setRequestProperty("charset", "utf-8");
             conn.setInstanceFollowRedirects(false);

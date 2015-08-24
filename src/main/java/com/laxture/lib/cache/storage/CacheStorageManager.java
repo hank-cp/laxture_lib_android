@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -36,8 +37,8 @@ public class CacheStorageManager extends Thread {
     private MyHandler mHandler;
 
     private static CacheStorageManager instance;
-    private static HashMap<String, CacheStorage> sMemCache = new HashMap<>();
-    private static HashMap<String, CacheStorage> sUpdatedPool = new HashMap<>();
+    private static Hashtable<String, CacheStorage> sMemCache = new Hashtable<>();
+    private static Hashtable<String, CacheStorage> sUpdatedPool = new Hashtable<>();
 
     // Alarm Intent to schedule recycle cache
     public static final String INTENT_RECYCLE_CACHE = "recycle_cache_storage";
@@ -79,6 +80,11 @@ public class CacheStorageManager extends Thread {
         cache.setLastVisit(System.currentTimeMillis());
 
         return cache;
+    }
+
+    public void abandonCache(String key) {
+        sMemCache.remove(key);
+        sUpdatedPool.remove(key);
     }
 
     void putInUpdatedPool(CacheStorage cache) {

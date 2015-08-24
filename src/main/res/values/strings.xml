@@ -24,7 +24,7 @@
 
     <string name="msg_cannotFoundPhoto">添加照片失败，请从相册中选择</string>
     <string name="msg_notSupportOperation">无法完成操作</string>
-    <string name="msg_loading">请稍候…</string>
+    <string name="msg_loading">努力加载中…</string>
 
     <!-- HTTP error message -->
     <string name="msg_http_err_network_not_available">无网络</string>

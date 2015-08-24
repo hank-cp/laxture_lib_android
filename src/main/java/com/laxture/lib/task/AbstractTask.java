@@ -80,28 +80,34 @@ public abstract class AbstractTask<Result> {
     // Public/Protected Method
     //*************************************************************************
 
-    public void addStartListener(TaskStartListener callback) {
+    public AbstractTask<Result> addStartListener(TaskStartListener callback) {
         mStartListeners.add(callback);
+        return this;
     }
 
-    public void addProgressUpdatedListener(TaskProgressUpdatedListener callback) {
+    public AbstractTask<Result> addProgressUpdatedListener(TaskProgressUpdatedListener callback) {
         mProgressUpdatedListeners.add(callback);
+        return this;
     }
 
-    public void addFinishedListener(TaskFinishedListener<Result> callback) {
+    public AbstractTask<Result> addFinishedListener(TaskFinishedListener<Result> callback) {
         mFinishedListeners.add(callback);
+        return this;
     }
 
-    public void addCancelledListener(TaskCancelledListener<Result> callback) {
+    public AbstractTask<Result> addCancelledListener(TaskCancelledListener<Result> callback) {
         mCancelledListeners.add(callback);
+        return this;
     }
 
-    public void addFailedListener(TaskFailedListener callback) {
+    public AbstractTask<Result> addFailedListener(TaskFailedListener callback) {
         mFailedListeners.add(callback);
+        return this;
     }
 
-    public void addDataChangedListener(TaskDataChangedListener callback) {
+    public AbstractTask<Result> addDataChangedListener(TaskDataChangedListener callback) {
         mDataChangedListeners.add(callback);
+        return this;
     }
 
     public void cloneTaskListeners(AbstractTask<Result> task) {
