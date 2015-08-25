@@ -191,7 +191,8 @@ public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
         return conn;
     }
 
-    private void setHeader(HttpURLConnection conn) {
+    protected void setHeader(HttpURLConnection conn) {
+        if (config.headers == null) return;
         for (Map.Entry<String, String> header : config.headers.entrySet()) {
             conn.setRequestProperty(header.getKey(), header.getValue());
         }

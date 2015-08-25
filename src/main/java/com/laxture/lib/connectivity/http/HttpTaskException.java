@@ -22,6 +22,8 @@ public class HttpTaskException extends TaskException {
 
     public static final int HTTP_ERR_CODE_SAVE_DOWNLOAD_ERROR = 90006;
 
+    public static final int HTTP_ERR_CODE_INVALID_UPLOAD_FILE = 90007;
+
     public static final int HTTP_ERR_CODE_UNKNOWN_ERROR = 90100;
 
     public HttpTaskException(int errorCode, Throwable throwable) {
