@@ -19,9 +19,13 @@ public class TabHostExt extends TabHost {
         super(context);
     }
 
+    public void focusCurrentTab(int index) {
+        super.setCurrentTab(index);
+    }
+
     @Override
     public void setCurrentTab(int index) {
-        if (mOnTabClickListener != null)
+        if (mOnTabClickListener != null && getCurrentTab() == index)
             mOnTabClickListener.onTabClick(index);
 
         super.setCurrentTab(index);
