@@ -1,5 +1,11 @@
 package com.laxture.lib.task;
 
+import android.os.Process;
+
+import com.laxture.lib.BuildConfig;
+import com.laxture.lib.util.LLog;
+import com.laxture.lib.util.UnHandledException;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -7,12 +13,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
-
-import android.os.Process;
-
-import com.laxture.lib.BuildConfig;
-import com.laxture.lib.util.LLog;
-import com.laxture.lib.util.UnHandledException;
 
 public abstract class AbstractAsyncTask<Result> extends AbstractTask<Result> {
 
@@ -73,24 +73,18 @@ public abstract class AbstractAsyncTask<Result> extends AbstractTask<Result> {
      * @return
      */
     protected MyFutureTask<Result> executeOnExecutor(Executor exec) {
-        if (mState != State.NotStart) {
-            switch (mState) {
-            case Pending:
-            case Running:
-                LLog.e("Cannot start task:"
-                        + " the task is already running or pending in queue.");
+        if (mState == State.Pending || mState == State.Running) {
+            LLog.w("Cannot start task:"
+                    + " the task is already running or pending in queue.");
+            return mFuture;
 
-            default:
-                LLog.e("Cannot start task:"
-                        + " the task has already been executed or cancelled"
-                        + "(a task can be executed only once)");
-
-                return mFuture;
-            }
+        } else if (mState != State.NotStart) {
+            LLog.e("Restart task:"
+                    + " the task has been already executed or cancelled.");
         }
+
         setState(State.Pending);
         exec.execute(mFuture);
-
         return mFuture;
     }
 
