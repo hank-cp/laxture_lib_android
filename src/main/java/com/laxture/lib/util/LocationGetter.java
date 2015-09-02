@@ -18,6 +18,7 @@ public final class LocationGetter {
     public static final float DEFAULT_ACCEPTED_ACCURACY = 50f;
     public static final long DEFAULT_KEEP_ACCURACY_DURATION = 10*1000;
     public static final long DEFAULT_LOCATION_UPDATE_INTERVAL_MILLIS = 100;
+    public static final long DEFAULT_LOCATION_UPDATE_DURATION_LIMIT = 30*1000;
 
     // config fields
     private ArrayList<LocationHandler> mLocationHandlers = new ArrayList<>();
@@ -306,7 +307,7 @@ public final class LocationGetter {
 
     public static class LocationGetterBuilder {
 
-        public long updatingDuration;
+        public long updatingDuration = DEFAULT_LOCATION_UPDATE_DURATION_LIMIT;
         public float acceptedAccuracy = DEFAULT_ACCEPTED_ACCURACY;
         public long keepAccuracyDuration = DEFAULT_KEEP_ACCURACY_DURATION;
         public long locationUpdateIntervalMillis = DEFAULT_LOCATION_UPDATE_INTERVAL_MILLIS;
