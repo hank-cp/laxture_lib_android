@@ -33,7 +33,7 @@ public class HttpUploadTask extends HttpSimpleTask {
     }
 
     @Override
-    protected String run() {
+    public String run() {
         if (Checker.isEmpty(mUploadFile)) {
             setErrorDetails(new TaskException(
                     HttpTaskException.HTTP_ERR_CODE_INVALID_UPLOAD_FILE,
