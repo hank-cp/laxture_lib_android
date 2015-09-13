@@ -24,7 +24,8 @@ public class ImageDownloadTask extends HttpDownloadTask<ImageDownloadTask.ImageI
     protected ImageInfo generateResult() {
         // validate downloaded image.
         try {
-            if (!HttpHelper.CONTENT_TYPE_JPEG.equals(getContentType())
+            if (getContentType() != null
+                    && !HttpHelper.CONTENT_TYPE_JPEG.equals(getContentType())
                     && !HttpHelper.CONTENT_TYPE_PNG.equals(getContentType())
                     && !HttpHelper.CONTENT_TYPE_GIF.equals(getContentType())
                     && connection.getResponseCode() != HttpURLConnection.HTTP_NOT_MODIFIED) {
@@ -48,10 +49,17 @@ public class ImageDownloadTask extends HttpDownloadTask<ImageDownloadTask.ImageI
         imageInfo.contentLength = getContentLength();
         imageInfo.downloadedFile = getDownloadFile();
         imageInfo.cacheId = mCacheId;
-        String lastModified = connection.getHeaderField("Last-Modified");
-        if (!Checker.isEmpty(lastModified)) imageInfo.lastModify = lastModified;
-        CacheStorage cache = CacheStorageManager.getInstance().getCache(url);
-        if (cache != null) cache.setLastModify(lastModified);
+
+        // update last modify tag
+        if (connection != null) {
+            String lastModified = connection.getHeaderField("Last-Modified");
+            if (!Checker.isEmpty(lastModified)) imageInfo.lastModify = lastModified;
+            CacheStorage cache = CacheStorageManager.getInstance().getCache(url);
+            if (cache != null) cache.setLastModify(lastModified);
+        } else {
+            imageInfo.lastModify = CacheStorageManager.getInstance().getCache(mCacheId).getLastModify();
+        }
+
         return imageInfo;
     }
 
