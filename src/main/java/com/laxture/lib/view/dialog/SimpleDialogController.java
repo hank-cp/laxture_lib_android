@@ -48,9 +48,10 @@ public class SimpleDialogController extends DialogController {
     public Dialog prepareDialog(String dialogName, Object...params) {
 
         if (DIALOG_PROGRESS.equals(dialogName)) {
+            boolean cancelable = params.length >= 2 ? (Boolean) params[1] : false;
             return getProgressDialog(dialogName,
                     params[0].toString(),
-                    (Boolean) params[1], null);
+                    cancelable, null);
 
         } else if (DIALOG_ALERT.equals(dialogName)) {
             return getAlertDialog(dialogName,
