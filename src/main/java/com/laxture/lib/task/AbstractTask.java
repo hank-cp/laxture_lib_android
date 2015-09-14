@@ -61,7 +61,7 @@ public abstract class AbstractTask<Result> {
     // These method need to be override in sub class
     //*************************************************************************
 
-    protected abstract Result run();
+    public abstract Result run();
 
     public boolean cancel() {
         mCancelled.set(true);

@@ -15,7 +15,7 @@ public class HttpTaskConfig {
     public int socketTimeout = 20 * 1000; // 20 seconds
     public int socketBufferSize = 8192; // http的缓冲区大小设置
     public int maxRedirectCount = 5;
-    public int maxRetryCount = 1;
+    public int maxRetryCount = 0;
     public Map<String, String> headers;
 
     public HttpTaskConfig immutableCopy() {

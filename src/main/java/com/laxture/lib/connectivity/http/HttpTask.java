@@ -80,7 +80,7 @@ public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
     //*************************************************************************
 
     @Override
-    protected Result run() {
+    public Result run() {
         // if mContext is set, check network status first
         if (!NetworkUtil.isNetworkAvailable()) {
             int errorCode = HttpTaskException.HTTP_ERR_CODE_NETWORK_NOT_AVAILABLE;
@@ -119,7 +119,7 @@ public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
             return onErrorOrCancel(e);
 
         } finally {
-            connection.disconnect();
+            if (connection != null) connection.disconnect();
         }
     }
 

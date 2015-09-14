@@ -49,7 +49,7 @@ public abstract class HttpDownloadTask<Result> extends HttpTask<Result> {
     }
 
     @Override
-    protected Result run() {
+    public Result run() {
         if (avoidDuplicatedDownload && !Checker.isEmpty(mDownloadFile)) {
             return generateResult();
         } else return super.run();
