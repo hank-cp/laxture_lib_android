@@ -16,6 +16,7 @@ import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.cache.men.BitmapCache;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
@@ -23,6 +24,7 @@ import java.net.NetworkInterface;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 public class DeviceUtil {
 
@@ -190,5 +192,31 @@ public class DeviceUtil {
         LLog.d("Image cache size %s/%s", BitmapCache.size(), BitmapCache.maxSize());
         LLog.d("Native heap usage :: %s/%s", Debug.getNativeHeapAllocatedSize(), Debug.getNativeHeapSize());
         LLog.d("Memory usage :: %s/%s", Runtime.getRuntime().totalMemory(), Runtime.getRuntime().maxMemory());
+    }
+
+    public static int getNumCores() {
+        //Private Class to display only CPU devices in the directory listing
+        class CpuFilter implements FileFilter {
+            @Override
+            public boolean accept(File pathname) {
+                //Check if filename is "cpu", followed by a single digit number
+                if(Pattern.matches("cpu[0-9]+", pathname.getName())) {
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        try {
+            //Get directory containing CPU info
+            File dir = new File("/sys/devices/system/cpu/");
+            //Filter to only list the devices we care about
+            File[] files = dir.listFiles(new CpuFilter());
+            //Return the number of cores (virtual CPU devices)
+            return files.length;
+        } catch(Exception e) {
+            //Default to return 1 core
+            return 1;
+        }
     }
 }

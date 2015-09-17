@@ -36,7 +36,7 @@ public abstract class SimulatorTask extends AbstractAsyncTask<String> {
     }
 
     @Override
-    protected String run() {
+    public String run() {
         if (testCancel) {
             setResult("SimulatorTask Cancelled");
             cancel();

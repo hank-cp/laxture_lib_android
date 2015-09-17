@@ -3,6 +3,7 @@ package com.laxture.lib.task;
 import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.task.AbstractAsyncTask.MyFutureTask;
 import com.laxture.lib.util.Checker;
+import com.laxture.lib.util.DeviceUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,7 +51,7 @@ public abstract class TaskManager {
      * An {@link Executor} that executes tasks immediately.
      */
     private static final ThreadPoolExecutor IMMEDIATE_EXECUTOR =
-            new ManagedThreadPoolExecutor(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS,
+            new ManagedThreadPoolExecutor(0, DeviceUtil.getNumCores(), 60L, TimeUnit.SECONDS,
                     new SynchronousQueue<Runnable>(), sThreadFactory);
 
     //*************************************************************************
