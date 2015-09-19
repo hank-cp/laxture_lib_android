@@ -15,6 +15,4 @@
         android:layout_gravity="center"
         datePicker:textSize="18dp" />
 
-    <include layout="@layout/dialog_buttons" />
-
 </LinearLayout>

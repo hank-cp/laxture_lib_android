@@ -1,8 +1,5 @@
 package com.laxture.lib;
 
-import java.io.File;
-import java.io.IOException;
-
 import android.app.Application;
 import android.content.ContentResolver;
 import android.content.pm.ApplicationInfo;
@@ -10,11 +7,12 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Environment;
-import android.util.Log;
 
-import com.laxture.lib.util.DateUtil;
 import com.laxture.lib.util.LLog;
 import com.laxture.lib.util.UnHandledException;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * This Class is designated for two purpose:

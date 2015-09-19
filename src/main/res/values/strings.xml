@@ -34,9 +34,6 @@
     <string name="msg_http_err_download_error">下载失败，请稍候重试</string>
     <string name="msg_http_err_save_download_error">下载失败，磁盘空间不足</string>
 
-    <string name="cancel">取消</string>
-    <string name="set">设置</string>
-
     <!-- 手势解锁相关 -->
     <string name="lockscreen_access_pattern_start">Pattern started</string>
     <string name="lockscreen_access_pattern_cleared">Pattern cleared</string>

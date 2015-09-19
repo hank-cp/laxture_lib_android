@@ -15,14 +15,4 @@
     <color name="light_gray">#909090</color>
     <color name="dark_gray">#777777</color>
 
-    <!-- Dialog -->
-    <color name="bg_dialog_body">#F5F5F5</color>
-    <color name="bg_dialog_header">#43ADBB</color>
-    <color name="dialog_tablist_divider">#33B5E5</color>
-    <color name="dialog_list_title">#2E2E2E</color>
-    <color name="dialog_background">#F5F5F5</color>
-    <color name="dialog_bottom_bar">#EBEBEB</color>
-
-    <color name="textEditBg">#FFFFCC</color>
-
 </resources>

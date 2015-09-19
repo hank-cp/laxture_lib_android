@@ -1,18 +1,5 @@
 <resources>
 
-    <!-- Dialog -->
-    <dimen name="dialog_list_item">46dip</dimen>
-    <dimen name="dialog_title_minheight">36dip</dimen>
-    <dimen name="dialog_title_paddingtop">8dp</dimen>
-    <dimen name="dialog_width">280dip</dimen>
-
-    <dimen name="dialog_content_padding">10dp</dimen>
-    <dimen name="form_circle_radius">3dp</dimen>
-    <dimen name="DialogIconSize">48dp</dimen>
-
-    <dimen name="dialog_button_size">18sp</dimen>
-    <dimen name="dialog_content_size">16dp</dimen>
-
     <!-- View Support -->
     <dimen name="keyboard_min_heights">200dip</dimen>
     <dimen name="screen_min_heights">150dip</dimen>
