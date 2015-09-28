@@ -13,6 +13,8 @@ import com.laxture.lib.R;
 import com.laxture.lib.util.CollectionUtil;
 import com.laxture.lib.util.LLog;
 
+import java.util.Date;
+
 public class WheelDatePicker extends FrameLayout {
 
     public WheelDatePicker(Context context) {
@@ -136,6 +138,8 @@ public class WheelDatePicker extends FrameLayout {
         mMonthWheel.TEXT_SIZE = textSize;
         mDayWheel.TEXT_SIZE = textSize;
         array.recycle();
+
+        setCurrentTime(DateTime.now());
     }
 
     public void updateAdapters() {
@@ -247,7 +251,7 @@ public class WheelDatePicker extends FrameLayout {
     }
 
     public void setCurrentTime(DateTime dateTime) {
-        mCurrentTime = dateTime.toDateMidnight().toMutableDateTime();
+        mCurrentTime = dateTime.withTimeAtStartOfDay().toMutableDateTime();
         setTime();
     }
 
