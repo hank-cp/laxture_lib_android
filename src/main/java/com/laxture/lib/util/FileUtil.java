@@ -191,9 +191,7 @@ public class FileUtil {
             }
             os.flush();
             return true;
-        } catch (FileNotFoundException e) {
-            LLog.e("复制文件失败");
-        } catch (IOException e) {
+        } catch (Exception e) {
             LLog.e("Failed to copy file from " + src + " to " + dst, e);
         } finally {
             StreamUtil.closeStream(is);
