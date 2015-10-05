@@ -4,6 +4,7 @@ import android.net.Uri;
 
 import com.laxture.lib.task.AbstractAsyncTask;
 import com.laxture.lib.util.Checker;
+import com.laxture.lib.util.CollectionUtil;
 import com.laxture.lib.util.LLog;
 import com.laxture.lib.util.NetworkUtil;
 import com.laxture.lib.util.UnHandledException;
@@ -13,6 +14,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -73,6 +75,14 @@ public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
 
     public void addArgument(String key, double value) {
         arguments.put(key, Double.toString(value));
+    }
+
+    public void addArgument(String key , long[] value) {
+        arguments.put(key, Arrays.toString(value));
+    }
+
+    public void addArgument(String key , String[] value) {
+        arguments.put(key, Arrays.toString(value));
     }
 
     //*************************************************************************
@@ -148,9 +158,18 @@ public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
         } else {
             for (Map.Entry<String, String> param : arguments.entrySet()) {
                 if (postData.length() != 0) postData.append('&');
-                postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
-                postData.append('=');
-                postData.append(URLEncoder.encode(param.getValue(), "UTF-8"));
+                if (param.getValue().startsWith("[") && param.getValue().endsWith("]")) {
+                    String[] array = param.getValue().substring(1, param.getValue().length()-1).split(", ");
+                    for (String p : array) {
+                        postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
+                        postData.append('=');
+                        postData.append(URLEncoder.encode(p, "UTF-8"));
+                    }
+                } else {
+                    postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
+                    postData.append('=');
+                    postData.append(URLEncoder.encode(param.getValue(), "UTF-8"));
+                }
             }
         }
 

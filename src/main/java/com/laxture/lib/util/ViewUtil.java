@@ -27,6 +27,12 @@ public final class ViewUtil {
 
     private ViewUtil() {} // Hide Constructor.
 
+    public static final ViewGroup.LayoutParams DEFAULT_LAYOUT_PARAM =
+            new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+
     public static final RadioGroup.OnCheckedChangeListener TOGGLE_LISTENER =
         new RadioGroup.OnCheckedChangeListener() {
         @Override
