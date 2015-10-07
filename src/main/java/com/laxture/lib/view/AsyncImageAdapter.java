@@ -127,11 +127,8 @@ public class AsyncImageAdapter implements TaskProgressUpdatedListener,
     }
 
     public void setImage(String taskTag, String imageUrl) {
-        if (Checker.isEmpty(imageUrl))
-            throw new IllegalArgumentException("image key cannot be empty");
         CacheStorage cacheStorage = CacheStorageManager.getInstance().getCache(imageUrl);
-        mLastModified = cacheStorage.getLastModify();
-        setImage(imageUrl, taskTag, cacheStorage.getFile(), imageUrl, cacheStorage.getCacheFile());
+        setImage(taskTag, cacheStorage);
     }
 
     public void setImage(CacheStorage cache) {
