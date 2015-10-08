@@ -226,6 +226,10 @@ public class IntentUtil {
         intent.putExtra("sms_body", content);
         return intent;
     }
+    public static Intent getPhoneCallIntent(String phone) {
+        Uri uri = Uri.fromParts("tel", phone, null);
+        return new Intent(Intent.ACTION_DIAL, uri);
+    }
 
     /**
      * Main Activity is the one you specify in AndroidManifext.xml.
