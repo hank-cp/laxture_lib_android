@@ -1,6 +1,7 @@
 package com.laxture.lib.connectivity.http;
 
 import android.net.Uri;
+import android.text.TextUtils;
 
 import com.laxture.lib.task.AbstractAsyncTask;
 import com.laxture.lib.util.Checker;
@@ -11,11 +12,13 @@ import com.laxture.lib.util.UnHandledException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
@@ -215,6 +218,13 @@ public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
         for (Map.Entry<String, String> header : config.headers.entrySet()) {
             conn.setRequestProperty(header.getKey(), header.getValue());
         }
+
+        // Set cookies
+        if (HttpHelper.sharedCookieManager.getCookieStore().getCookies().size() > 0) {
+            //While joining the Cookies, use ',' or ';' as needed. Most of the server are using ';'
+            conn.setRequestProperty("Cookie",
+                    TextUtils.join(";", HttpHelper.sharedCookieManager.getCookieStore().getCookies()));
+        }
     }
 
     protected int getRetries() {
@@ -229,6 +239,16 @@ public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
     }
 
     protected void processResponse(InputStream inputStream) throws IOException {
+        // Load/Save cookies
+        Map<String, List<String>> headerFields = connection.getHeaderFields();
+        List<String> cookiesHeader = headerFields.get(HttpHelper.COOKIES_HEADER);
+        if (cookiesHeader != null) {
+            for (String cookie : cookiesHeader) {
+                HttpHelper.sharedCookieManager.getCookieStore().add(
+                        null, HttpCookie.parse(cookie).get(0));
+            }
+        }
+
         // Log response info
         if (DEBUG) {
             LLog.v("Receiving Http Response from " + connection.getURL());
