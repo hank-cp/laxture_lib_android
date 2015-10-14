@@ -119,9 +119,9 @@ public class CameraLauncher {
     }
 
     public void launchCamera(Location location) {
-        Intent cameraIntent = null;
+        mOutputFile = null;
         mPhotoFile = IntentUtil.getOutputImageFile();
-        cameraIntent = IntentUtil.getCameraIntent(mPhotoFile, 0);
+        Intent cameraIntent = IntentUtil.getCameraIntent(mPhotoFile, 0);
 
         mCameraRollObserver.startWatching();
         if (mFragment != null) {
