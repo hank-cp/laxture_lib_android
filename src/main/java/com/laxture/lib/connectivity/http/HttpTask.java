@@ -160,15 +160,16 @@ public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
 
         } else {
             for (Map.Entry<String, String> param : arguments.entrySet()) {
-                if (postData.length() != 0) postData.append('&');
                 if (param.getValue().startsWith("[") && param.getValue().endsWith("]")) {
                     String[] array = param.getValue().substring(1, param.getValue().length()-1).split(", ");
                     for (String p : array) {
+                        if (postData.length() != 0) postData.append('&');
                         postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
                         postData.append('=');
                         postData.append(URLEncoder.encode(p, "UTF-8"));
                     }
                 } else {
+                    if (postData.length() != 0) postData.append('&');
                     postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
                     postData.append('=');
                     postData.append(URLEncoder.encode(param.getValue(), "UTF-8"));
