@@ -177,7 +177,7 @@ public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
             }
         }
 
-        if (method.equals(HttpHelper.HTTP_METHOD_POST) && postData.length() > 0) {
+        if (method.equals(HttpHelper.HTTP_METHOD_POST)) {
             if (DEBUG) LLog.d("Posting data : "+postData.toString());
 
             conn = (HttpURLConnection) new URL(encodedUrl).openConnection();

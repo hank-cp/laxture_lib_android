@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -21,6 +22,7 @@ import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.widget.Toast;
 
 import com.laxture.lib.BuildConfig;
 import com.laxture.lib.RuntimeContext;
@@ -385,15 +387,14 @@ public final class BitmapUtil {
 
 
     //*************************************************************************
-    // Load Bitmap From Cache
+    // Media Store
     //*************************************************************************
 
-
-    public static File getRealPathFromUri(ContentResolver cr, Uri contentUri) {
+    public static File getRealPathFromUri(Uri contentUri) {
         if (contentUri == null) return null;
 
         String[] projection = { MediaStore.Images.Media.DATA };
-        Cursor cursor = cr.query(contentUri, projection, null, null, null);
+        Cursor cursor = RuntimeContext.getContentResolver().query(contentUri, projection, null, null, null);
         if (cursor == null) return null;
         File result = null;
         if (cursor.moveToFirst()) {
@@ -404,9 +405,9 @@ public final class BitmapUtil {
         return result;
     }
 
-    public static File queryRealPathFromFileName(ContentResolver cr, String fileName) {
+    public static File queryRealPathFromFileName(String fileName) {
         String[] projection = { MediaStore.Images.Media.DATA };
-        Cursor cursor = cr.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+        Cursor cursor = RuntimeContext.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 projection,
                 String.format("%s = '%s'", MediaStore.Images.Media.DISPLAY_NAME, fileName),
                 null, null);
@@ -419,6 +420,21 @@ public final class BitmapUtil {
         cursor.close();
         return result;
     }
+
+    public static File resolveGalleryResultIntent(Intent data) {
+        Uri uri = data.getData();
+        File file = getRealPathFromUri(uri);
+        if (file == null) {
+            // to handle URI like file:///mnt/sdcard/DCIM/Camera/IMG_20130411_111630.jpg
+            // speicifically from MIUI
+            file = new File(uri.getPath());
+        }
+        return file;
+    }
+
+    //*************************************************************************
+    // Load Bitmap From Cache
+    //*************************************************************************
 
     /**
      * Store a bitmap object to file. It's always be good to recycle the
