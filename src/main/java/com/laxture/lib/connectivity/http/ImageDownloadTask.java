@@ -25,9 +25,9 @@ public class ImageDownloadTask extends HttpDownloadTask<ImageDownloadTask.ImageI
         // validate downloaded image.
         try {
             if (getContentType() != null
-                    && !HttpHelper.CONTENT_TYPE_JPEG.equals(getContentType())
-                    && !HttpHelper.CONTENT_TYPE_PNG.equals(getContentType())
-                    && !HttpHelper.CONTENT_TYPE_GIF.equals(getContentType())
+                    && !getContentType().contains(HttpHelper.CONTENT_TYPE_JPEG)
+                    && !getContentType().contains(HttpHelper.CONTENT_TYPE_PNG)
+                    && !getContentType().contains(HttpHelper.CONTENT_TYPE_GIF)
                     && connection.getResponseCode() != HttpURLConnection.HTTP_NOT_MODIFIED) {
                 LLog.e("Download image failed, not valid content type: %s", getContentType());
                 setErrorDetails(new HttpTaskException(
