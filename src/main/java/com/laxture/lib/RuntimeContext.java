@@ -2,11 +2,13 @@ package com.laxture.lib;
 
 import android.app.Application;
 import android.content.ContentResolver;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 
 import com.laxture.lib.util.LLog;
 import com.laxture.lib.util.UnHandledException;
@@ -135,6 +137,10 @@ public class RuntimeContext {
     public static <T> T getSystemService(String name) {
         if (instance == null) throw new IllegalArgumentException("RuntimeContext is not initialized.");
         return (T) instance.mAppContext.getSystemService(name);
+    }
+
+    public static SharedPreferences getSharedPreferences() {
+        return PreferenceManager.getDefaultSharedPreferences(getApplication());
     }
 
     public static Resources getResources() {
