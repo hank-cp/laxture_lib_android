@@ -223,7 +223,7 @@ public final class ViewUtil {
     /** 为EditText设置错误提示 */
     public static void setErrorHint(EditText editText, String errMsg) {
         ForegroundColorSpan span = new ForegroundColorSpan(
-                RuntimeContext.getResources().getColor(android.R.color.black));
+                RuntimeContext.getResources().getColor(android.R.color.white));
         SpannableStringBuilder sb = new SpannableStringBuilder(errMsg);
         sb.setSpan(span, 0, errMsg.length(), 0);
         editText.setError(sb);

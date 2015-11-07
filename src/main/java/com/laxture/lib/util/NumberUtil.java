@@ -16,6 +16,10 @@ public class NumberUtil {
         return new DecimalFormat(pattern).format(num);
     }
 
+    public static String format(float num, String pattern) {
+        return new DecimalFormat(pattern).format(num);
+    }
+
     public static int parseInt(String text) {
         try {
             return Integer.parseInt(text);
