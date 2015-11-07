@@ -9,6 +9,8 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,7 @@ import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -215,6 +218,15 @@ public final class ViewUtil {
 
     public static View findViewById(Fragment fragment, int id) {
         return fragment.getActivity().findViewById(id);
+    }
+
+    /** 为EditText设置错误提示 */
+    public static void setErrorHint(EditText editText, String errMsg) {
+        ForegroundColorSpan span = new ForegroundColorSpan(
+                RuntimeContext.getResources().getColor(android.R.color.black));
+        SpannableStringBuilder sb = new SpannableStringBuilder(errMsg);
+        sb.setSpan(span, 0, errMsg.length(), 0);
+        editText.setError(sb);
     }
 
 }
