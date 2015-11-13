@@ -189,6 +189,10 @@ public class IntentUtil {
         return Intent.createChooser(intent, shareChooserTitle);
     }
 
+    public static Intent getSettingIntent() {
+        return new Intent(Settings.ACTION_SETTINGS);
+    }
+
     public static Intent getGPSSettingIntent() {
         return new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
     }
