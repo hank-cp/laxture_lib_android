@@ -36,6 +36,12 @@ public final class ViewUtil {
                     ViewGroup.LayoutParams.WRAP_CONTENT
             );
 
+    public static final ViewGroup.LayoutParams FILL_LAYOUT_PARAM =
+            new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+            );
+
     public static final RadioGroup.OnCheckedChangeListener TOGGLE_LISTENER =
         new RadioGroup.OnCheckedChangeListener() {
         @Override
