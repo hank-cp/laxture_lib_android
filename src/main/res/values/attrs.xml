@@ -8,10 +8,10 @@
         <attr name="boundWidth" format="dimension" />
         <attr name="boundHeight" format="dimension" />
         <attr name="density">
-            <flag name="nochange" value="-0x1"/>
-            <flag name="middle" value="0x0" />
-            <flag name="high" value="0x1" />
-            <flag name="xhigh" value="0x2" />
+            <flag name="nochange" value="-1"/>
+            <flag name="middle" value="0" />
+            <flag name="high" value="1" />
+            <flag name="xhigh" value="2" />
         </attr>
         <attr name="progressView" format="reference" />
     </declare-styleable>

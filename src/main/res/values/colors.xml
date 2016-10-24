@@ -4,6 +4,7 @@
     <!-- General -->
     <color name="transparent">#00FFFFFF</color>
     <color name="semi_transparent">#33FFFFFF</color>
+    <color name="semi_transparent_dark">#33000000</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
     <color name="red">#FF0000</color>
