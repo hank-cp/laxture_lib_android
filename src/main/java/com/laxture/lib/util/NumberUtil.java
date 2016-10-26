@@ -27,4 +27,25 @@ public class NumberUtil {
         return 0;
     }
 
+    public static long parseLong(String text) {
+        try {
+            return Long.parseLong(text);
+        } catch (Exception ignored) {}
+        return 0;
+    }
+
+    public static short parseShort(String text) {
+        try {
+            return Short.parseShort(text);
+        } catch (Exception ignored) {}
+        return 0;
+    }
+
+    public static byte parseByte(String text) {
+        try {
+            return Byte.parseByte(text);
+        } catch (Exception ignored) {}
+        return 0;
+    }
+
 }
