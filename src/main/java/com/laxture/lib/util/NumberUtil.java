@@ -48,4 +48,18 @@ public class NumberUtil {
         return 0;
     }
 
+    public static float parseFloat(String text) {
+        try {
+            return Float.parseFloat(text);
+        } catch (Exception ignored) {}
+        return 0;
+    }
+
+    public static double parseDouble(String text) {
+        try {
+            return Double.parseDouble(text);
+        } catch (Exception ignored) {}
+        return 0;
+    }
+
 }

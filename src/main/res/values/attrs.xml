@@ -45,4 +45,9 @@
         </attr>
     </declare-styleable>
 
+    <declare-styleable name="TransformableEditText">
+        <attr name="reserveBackground" format="boolean" />
+        <attr name="exploitable" format="boolean" />
+    </declare-styleable>
+
 </resources>
