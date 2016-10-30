@@ -37,9 +37,9 @@ public abstract class AbstractTask<Result> {
     // listeners
     private Set<TaskStartListener> mStartListeners = new HashSet<>();
     private Set<TaskProgressUpdatedListener> mProgressUpdatedListeners = new HashSet<>();
-    private Set<TaskFinishedListener<Result>> mFinishedListeners = new HashSet<TaskFinishedListener<Result>>();
-    private Set<TaskCancelledListener<Result>> mCancelledListeners = new HashSet<TaskCancelledListener<Result>>();
-    private Set<TaskFailedListener> mFailedListeners = new HashSet<>();
+    private Set<TaskFinishedListener<Result>> mFinishedListeners = new HashSet<>();
+    private Set<TaskCancelledListener<Result>> mCancelledListeners = new HashSet<>();
+    private Set<TaskFailedListener<Result>> mFailedListeners = new HashSet<>();
     private Set<TaskDataChangedListener> mDataChangedListeners = new HashSet<>();
 
     // error code
@@ -100,7 +100,7 @@ public abstract class AbstractTask<Result> {
         return this;
     }
 
-    public AbstractTask<Result> addFailedListener(TaskFailedListener callback) {
+    public AbstractTask<Result> addFailedListener(TaskFailedListener<Result> callback) {
         mFailedListeners.add(callback);
         return this;
     }
