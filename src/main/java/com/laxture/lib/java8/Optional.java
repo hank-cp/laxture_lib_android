@@ -26,10 +26,6 @@ public class Optional<T> implements Serializable {
         return (Optional<T>) EMPTY;
     }
 
-    public static <T> Optional<T> empty(Class<T> type) {
-        return (Optional<T>) EMPTY;
-    }
-
     public static <T> Optional<T> of(T reference) {
         return new Optional<>(reference);
     }
