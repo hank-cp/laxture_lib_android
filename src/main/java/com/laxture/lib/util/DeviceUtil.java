@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Debug;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.provider.SyncStateContract;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Pair;
@@ -15,9 +14,11 @@ import com.laxture.lib.PrefKeys;
 import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.cache.men.BitmapCache;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -129,7 +130,7 @@ public class DeviceUtil {
      */
     public static File dumpLog(String[] tags, int size, File dumpFile) {
         // ref: http://developer.android.com/guide/developing/debugging/debugging-log.html
-        ArrayList<String> commands = new ArrayList<String>();
+        ArrayList<String> commands = new ArrayList<>();
         commands.add("logcat");
         // Set dump option
         commands.add("-d");
@@ -165,6 +166,52 @@ public class DeviceUtil {
         } catch (InterruptedException e) {
             String msg = "Process is terminated unexpectedly.";
             throw new UnHandledException(msg, e);
+        } catch (IOException e) {
+            String msg = "Dump log failed.";
+            LLog.e(msg);
+            throw new UnHandledException(msg, e);
+        }
+    }
+
+    /**
+     * Dump logs to String.
+     *
+     * @param tags Tags to filter
+     * @return
+     */
+    public static String dumpLogToText(String[] tags) {
+        // ref: http://developer.android.com/guide/developing/debugging/debugging-log.html
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add("logcat");
+        // Set dump option
+        commands.add("-d");
+        // Set format
+        commands.add("-v");
+        commands.add("time");
+        // Filter specified logs
+        if (!Checker.isEmpty(tags)) {
+            for (String tag : tags) commands.add(tag+":V");
+        }
+        // Add default logs
+        commands.add("*:S"); // Mute other logs
+        commands.add(TAG_ACTIVITY_THREAD+":E");
+        commands.add(TAG_ACTIVITY_RUNTIME+":E");
+        commands.add(TAG_DALVIKVM+":E");
+        commands.add(TAG_PROCESS+":E");
+
+        try {
+            Process p = Runtime.getRuntime().exec(commands.toArray(new String[0]));
+
+            BufferedReader bufferedReader = new BufferedReader(
+                    new InputStreamReader(p.getInputStream()));
+
+            StringBuilder log = new StringBuilder();
+            String line = "";
+            while ((line = bufferedReader.readLine()) != null) {
+                log.append(line);
+            }
+
+            return log.toString();
         } catch (IOException e) {
             String msg = "Dump log failed.";
             LLog.e(msg);
