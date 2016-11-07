@@ -25,12 +25,10 @@ public class DateWheelAdapter implements WheelAdapter {
     }
 
     public int getItemsCount() {
-        // TODO Auto-generated method stub
         return mItemNum;
     }
 
     public String getItem(int index) {
-        // TODO Auto-generated method stub
         Date d = new Date();
         d.setTime((long)index * 86400 * 1000);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(fmt);
@@ -43,7 +41,6 @@ public class DateWheelAdapter implements WheelAdapter {
     }
 
     public int getMaximumLength() {
-        // TODO Auto-generated method stub
         return this.fmt.getBytes().length + 2; // MM月dd日(8) (1) E(4) (=13)
     }
 

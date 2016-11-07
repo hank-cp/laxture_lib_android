@@ -2,6 +2,8 @@ package com.laxture.lib.util;
 
 import android.util.SparseArray;
 
+import com.laxture.lib.java8.Optional;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -16,16 +18,12 @@ public final class Checker {
 
     //********************* Empty Object Validation ***************************
 
-    public static boolean isZero(Long longNum) {
-        return longNum == null || longNum == 0;
+    public static boolean isZero(Number n) {
+        return n == null || n.intValue() == 0;
     }
 
-    public static boolean isZero(Integer integer) {
-        return integer == null || integer == 0;
-    }
-
-    public static boolean isZero(Double doubleNum) {
-        return doubleNum == null || doubleNum == 0;
+    public static <T extends Number> boolean isZero(Optional<T> n) {
+        return n.isPresent() && isZero(n.get());
     }
 
     public static boolean isPositive(Integer integer) {
@@ -34,6 +32,10 @@ public final class Checker {
 
     public static boolean isEmpty(CharSequence text) {
         return text == null || text.length() <= 0 || "null".equals(text);
+    }
+
+    public static boolean isEmpty(Optional<? extends CharSequence> text) {
+        return !text.isPresent() || isEmpty(text.get());
     }
 
     public static boolean isEmpty(Object[] array) {

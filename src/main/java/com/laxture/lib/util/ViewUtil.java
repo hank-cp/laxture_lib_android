@@ -235,4 +235,8 @@ public final class ViewUtil {
         editText.setError(sb);
     }
 
+    public static void clearErrorHint(EditText editText) {
+        editText.setError(null);
+    }
+
 }
