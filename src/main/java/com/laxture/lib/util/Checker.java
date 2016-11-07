@@ -35,7 +35,7 @@ public final class Checker {
     }
 
     public static boolean isEmpty(Optional<? extends CharSequence> text) {
-        return !text.isPresent() || isEmpty(text.get());
+        return text == null || !text.isPresent() || isEmpty(text.get());
     }
 
     public static boolean isEmpty(Object[] array) {
