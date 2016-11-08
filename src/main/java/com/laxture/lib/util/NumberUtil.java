@@ -22,6 +22,7 @@ public class NumberUtil {
 
     public static int parseInt(String text) {
         try {
+            if (text.contains(".")) return (int) parseDouble(text);
             return Integer.parseInt(text);
         } catch (Exception ignored) {}
         return 0;
@@ -29,6 +30,7 @@ public class NumberUtil {
 
     public static long parseLong(String text) {
         try {
+            if (text.contains(".")) return (long) parseDouble(text);
             return Long.parseLong(text);
         } catch (Exception ignored) {}
         return 0;
