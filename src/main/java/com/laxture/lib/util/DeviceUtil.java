@@ -130,7 +130,7 @@ public class DeviceUtil {
      */
     public static File dumpLog(String[] tags, int size, File dumpFile) {
         // ref: http://developer.android.com/guide/developing/debugging/debugging-log.html
-        ArrayList<String> commands = new ArrayList<>();
+        ArrayList<String> commands = new ArrayList<String>();
         commands.add("logcat");
         // Set dump option
         commands.add("-d");
@@ -177,11 +177,12 @@ public class DeviceUtil {
      * Dump logs to String.
      *
      * @param tags Tags to filter
+     * @param size unit is KB
      * @return
      */
     public static String dumpLogToText(String[] tags) {
         // ref: http://developer.android.com/guide/developing/debugging/debugging-log.html
-        ArrayList<String> commands = new ArrayList<>();
+        ArrayList<String> commands = new ArrayList<String>();
         commands.add("logcat");
         // Set dump option
         commands.add("-d");
