@@ -23,7 +23,7 @@ public final class Checker {
     }
 
     public static <T extends Number> boolean isZero(Optional<T> n) {
-        return n.isPresent() && isZero(n.get());
+        return n == null || !n.isPresent() || isZero(n.get());
     }
 
     public static boolean isPositive(Integer integer) {
