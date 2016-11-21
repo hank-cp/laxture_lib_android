@@ -36,15 +36,6 @@
         <attr name="android:fadingEdgeLength" />
     </declare-styleable>
 
-    <!-- SwipyRefreshLayout Style -->
-    <declare-styleable name="SwipyRefreshLayout">
-        <attr name="direction">
-            <enum name="top" value="0" />
-            <enum name="bottom" value="1" />
-            <enum name="both" value="2" />
-        </attr>
-    </declare-styleable>
-
     <declare-styleable name="TransformableEditText">
         <attr name="reserveBackground" format="boolean" />
         <attr name="exploitable" format="boolean" />
