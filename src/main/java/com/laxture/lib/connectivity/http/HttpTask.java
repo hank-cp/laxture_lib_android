@@ -5,7 +5,6 @@ import android.text.TextUtils;
 
 import com.laxture.lib.task.AbstractAsyncTask;
 import com.laxture.lib.util.Checker;
-import com.laxture.lib.util.CollectionUtil;
 import com.laxture.lib.util.LLog;
 import com.laxture.lib.util.NetworkUtil;
 import com.laxture.lib.util.UnHandledException;
@@ -124,6 +123,7 @@ public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
                 return onErrorOrCancel(null);
 
             processResponse(connection.getInputStream());
+            if (getErrorDetails() != null) return null;
 
             return generateResult();
 

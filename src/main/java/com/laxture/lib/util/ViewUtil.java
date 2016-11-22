@@ -21,6 +21,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -227,16 +228,48 @@ public final class ViewUtil {
     }
 
     /** 为EditText设置错误提示 */
-    public static void setErrorHint(EditText editText, String errMsg) {
+    public static void setErrorHint(TextView textView, String errMsg) {
         ForegroundColorSpan span = new ForegroundColorSpan(
                 RuntimeContext.getResources().getColor(android.R.color.white));
         SpannableStringBuilder sb = new SpannableStringBuilder(errMsg);
         sb.setSpan(span, 0, errMsg.length(), 0);
-        editText.setError(sb);
+        textView.setError(sb);
     }
 
-    public static void clearErrorHint(EditText editText) {
-        editText.setError(null);
+    public static void setErrorHint(Spinner spinner, String errMsg) {
+        View view = spinner.getSelectedView();
+        if (view != null) {
+            if (view instanceof TextView) {
+                setErrorHint((TextView) view, errMsg);
+            } else if (view instanceof ViewGroup) {
+                ViewGroup viewGroup = (ViewGroup) view;
+                for (int i=0; i<viewGroup.getChildCount(); i++) {
+                    if (viewGroup.getChildAt(i) instanceof TextView) {
+                        setErrorHint((TextView) viewGroup.getChildAt(i), errMsg);
+                    }
+                }
+            }
+        }
+    }
+
+    public static void clearErrorHint(TextView textView) {
+        textView.setError(null);
+    }
+
+    public static void clearErrorHint(Spinner spinner) {
+        View view = spinner.getSelectedView();
+        if (view != null) {
+            if (view instanceof TextView) {
+                clearErrorHint((TextView) view);
+            } else if (view instanceof ViewGroup) {
+                ViewGroup viewGroup = (ViewGroup) view;
+                for (int i=0; i<viewGroup.getChildCount(); i++) {
+                    if (viewGroup.getChildAt(i) instanceof TextView) {
+                        clearErrorHint((TextView) viewGroup.getChildAt(i));
+                    }
+                }
+            }
+        }
     }
 
 }

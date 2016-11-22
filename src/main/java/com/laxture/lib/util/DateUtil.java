@@ -72,18 +72,22 @@ public class DateUtil {
     //*************************************************************************
 
     public static String formatDate(Date date) {
+        if (date == null) return "";
         return J_DATA_FORMATTER.format(date);
     }
 
     public static String formatDateTime(Date date) {
+        if (date == null) return "";
         return J_DATA_TIME_FORMATTER.format(date);
     }
 
     public static String formatTime(Date date) {
+        if (date == null) return "";
         return J_TIME_FORMATTER.format(date);
     }
 
     public static String formatDate(Date date, String format) {
+        if (date == null) return "";
         return new SimpleDateFormat(format).format(date);
     }
 
@@ -92,18 +96,22 @@ public class DateUtil {
     //*************************************************************************
 
     public static String formatDate(DateTime date) {
+        if (date == null) return "";
         return JODA_DATE_FORMATTER.print(date);
     }
 
     public static String formatDateTime(DateTime date) {
+        if (date == null) return "";
         return JODA_DATE_TIME_FORMATTER.print(date);
     }
 
     public static String formatTime(DateTime date) {
+        if (date == null) return "";
         return JODA_TIME_FORMATTER.print(date);
     }
 
     public static String formatDate(DateTime date, String format) {
+        if (date == null) return "";
         return DateTimeFormat.forPattern(format).print(date);
     }
 
