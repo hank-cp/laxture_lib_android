@@ -1,8 +1,5 @@
 package com.laxture.lib.util;
 
-import java.io.File;
-import java.lang.reflect.Method;
-
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -18,7 +15,6 @@ import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -26,6 +22,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.laxture.lib.RuntimeContext;
+
+import java.io.File;
+import java.lang.reflect.Method;
 
 public final class ViewUtil {
 
@@ -53,6 +52,10 @@ public final class ViewUtil {
             }
         }
     };
+
+    public static boolean isFragmentDead(Fragment fragment) {
+        return fragment.isDetached() || fragment.isRemoving() || !fragment.isAdded();
+    }
 
     public static void removeViewFromParent(View view) {
         if (view == null) return;
