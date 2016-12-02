@@ -1,8 +1,5 @@
 package com.laxture.lib.util;
 
-import java.io.File;
-import java.util.Vector;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -10,12 +7,16 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.FileObserver;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
 import com.laxture.lib.R;
 import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.cache.men.BitmapCache;
+
+import java.io.File;
+import java.util.Vector;
 
 public class CameraLauncher {
 
@@ -153,39 +154,12 @@ public class CameraLauncher {
 
         // create output file based on output dir
         if (mOutputFile == null && mOutputDir != null) {
-            if (!mOutputDir.exists()) mOutputDir.mkdirs();
-            if (mOutputDir.isDirectory()) {
-                mOutputFile = new File(mOutputDir, mPhotoFile.getName());
-            }
+            mOutputFile = getOutputFile(mPhotoFile);
         }
 
         // copy a scaled image to home dir.
         if (mOutputFile != null && getWidthLimit() > 0 && getHeightLimit() > 0) {
-            BitmapUtil.Size imageSize = BitmapUtil.getImageSizeFromFile(mPhotoFile);
-            if (imageSize.width > getWidthLimit() || imageSize.height > getHeightLimit()) {
-
-                BitmapCache.prepareMemoryBeforeLoadBitmap(getWidthLimit(), getHeightLimit());
-
-                // resize image to limit size
-                Bitmap documentedBitmap = BitmapUtil.loadBitmapFromFile(
-                        mPhotoFile, getWidthLimit(), getHeightLimit(),
-                        BitmapUtil.ResizeMode.Fit);
-                if (documentedBitmap == null) {
-                    LLog.e("Failed to read captured photo data.");
-                    return null;
-                }
-                // Save captured photo data to documented photo file with scaled size.
-                BitmapUtil.storeBitmapToFile(documentedBitmap, mOutputFile, getQuality());
-                documentedBitmap.recycle();
-
-            // no need resize, copy directly. be careful of loading full size image that cause OOM.
-            } else  FileUtil.copyFile(mPhotoFile, mOutputFile);
-
-            if (Checker.isEmpty(mOutputFile)) {
-                LLog.e("Failed to save documented photo file %s.", mOutputFile);
-                return null;
-            }
-
+            compressImageFile(mOutputFile, mPhotoFile);
             mCameraLauncherListener.onImageReady(mOutputFile);
             return mOutputFile;
 
@@ -197,6 +171,46 @@ public class CameraLauncher {
 
     public interface CameraLauncherListener {
         void onImageReady(File imageFile);
+    }
+
+    public File getOutputFile(@NonNull File inputFile) {
+        if (mOutputDir != null) {
+            if (!mOutputDir.exists()) mOutputDir.mkdirs();
+            if (mOutputDir.isDirectory()) {
+                return new File(mOutputDir, inputFile.getName());
+            }
+        }
+        return null;
+    }
+
+    public File compressImageFile(File outputFile,
+                                  @NonNull File inputFile) {
+        BitmapUtil.Size imageSize = BitmapUtil.getImageSizeFromFile(inputFile);
+        if (imageSize.width > getWidthLimit() || imageSize.height > getHeightLimit()) {
+
+            BitmapCache.prepareMemoryBeforeLoadBitmap(getWidthLimit(), getHeightLimit());
+
+            // resize image to limit size
+            Bitmap documentedBitmap = BitmapUtil.loadBitmapFromFile(
+                    inputFile, getWidthLimit(), getHeightLimit(),
+                    BitmapUtil.ResizeMode.Fit);
+            if (documentedBitmap == null) {
+                LLog.e("Failed to read captured photo data.");
+                return null;
+            }
+            // Save captured photo data to documented photo file with scaled size.
+            BitmapUtil.storeBitmapToFile(documentedBitmap, outputFile, getQuality());
+            documentedBitmap.recycle();
+
+        // no need resize, copy directly. be careful of loading full size image that cause OOM.
+        } else FileUtil.copyFile(inputFile, outputFile);
+
+        if (Checker.isEmpty(outputFile)) {
+            LLog.e("Failed to save documented photo file %s.", outputFile);
+            return null;
+        }
+
+        return outputFile;
     }
 
 }

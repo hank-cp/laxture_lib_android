@@ -11,10 +11,13 @@ import com.laxture.lib.util.DigestUtils;
 import com.laxture.lib.util.WakeLocker;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CacheStorage implements Storage {
+public class CacheStorage implements Storage, Serializable {
+
+    private static final long serialVersionUID = 7721597522060199646L;
 
     private static CachePolicy sPolicy = new DefaultPolicy();
     public static void setCachePolicy(CachePolicy policy) { sPolicy = policy; }

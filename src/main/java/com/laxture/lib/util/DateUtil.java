@@ -26,7 +26,7 @@ public class DateUtil {
 
     public final static String DEFAULT_DATE_FORMAT = "yyyy/MM/dd";
     public final static String DEFAULT_TIME_FORMAT = "HH:mm";
-    public final static String DEFAULT_DATETIME_FORMAT = "yyyy/MM/dd HH:mm";
+    public final static String DEFAULT_DATETIME_FORMAT = "yy/MM/dd HH:mm";
 
     public final static String DATE_FORMAT_WITH_BAR="yyyy-MM-dd";
 
