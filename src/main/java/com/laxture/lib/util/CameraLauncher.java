@@ -69,6 +69,14 @@ public class CameraLauncher {
         return mQuality > 0 ? mQuality : DEFAULT_CAPTURED_QUALITY;
     }
 
+    private String mCameraRollObservingPath = Environment.DIRECTORY_DCIM;
+    public String getCameraRollObservingPath() {
+        return mCameraRollObservingPath;
+    }
+    public void setCameraRollObservingPath(String cameraRollObservingPath) {
+        this.mCameraRollObservingPath = cameraRollObservingPath;
+    }
+
     public void onSaveInstanceState(Bundle outState) {
         outState.putSerializable(PHOTO_FILE, mPhotoFile);
         outState.putSerializable(OUTPUT_DIR, mOutputDir);
@@ -87,18 +95,8 @@ public class CameraLauncher {
         mQuality = inState.getInt(QUALITY);
     }
 
-    private Vector<File> mNewAddedImageFiles = new Vector<File>();
-    private FileObserver mCameraRollObserver = new FileObserver(
-            Environment.DIRECTORY_DCIM, FileObserver.CREATE) {
-
-        @Override
-        public void onEvent(int event, String path) {
-            File newAddedFile = new File(path);
-            if (!FileUtil.getFileExtName(newAddedFile).equalsIgnoreCase("jpg")) return;
-            mNewAddedImageFiles.add(newAddedFile);
-            LLog.d("Detected a image file captured by camera", path);
-        }
-    };
+    private Vector<File> mNewAddedImageFiles = new Vector<>();
+    private FileObserver mCameraRollObserver;
 
     public CameraLauncher(Activity activity, int resultCode,
             CameraLauncherListener listener) {
@@ -116,15 +114,15 @@ public class CameraLauncher {
     }
 
     public void launchCamera() {
-        launchCamera(null);
+        launchCamera(null, null);
     }
 
-    public void launchCamera(Location location) {
+    public void launchCamera(Intent cameraIntent, Location location) {
         mOutputFile = null;
         mPhotoFile = IntentUtil.getOutputImageFile();
-        Intent cameraIntent = IntentUtil.getCameraIntent(mPhotoFile, 0);
+        if (cameraIntent == null) cameraIntent = IntentUtil.getCameraIntent(mPhotoFile, 0);
 
-        mCameraRollObserver.startWatching();
+        startCameraRollWatching();
         if (mFragment != null) {
             IntentUtil.startActivityWrapper(mFragment, cameraIntent, mResultCode);
         } else {
@@ -133,6 +131,8 @@ public class CameraLauncher {
     }
 
     public void onCameraCancel() {
+        mCameraRollObserver.stopWatching();
+        mNewAddedImageFiles.clear();
         if (Checker.isExistedFile(mPhotoFile)) mPhotoFile.delete();
     }
 
@@ -211,6 +211,21 @@ public class CameraLauncher {
         }
 
         return outputFile;
+    }
+
+    private void startCameraRollWatching() {
+        if (mCameraRollObserver != null) mCameraRollObserver.stopWatching();
+        mCameraRollObserver = new FileObserver(mCameraRollObservingPath, FileObserver.CREATE) {
+            @Override
+            public void onEvent(int event, String fileName) {
+                if (Checker.isEmpty(fileName)) return;
+                File newAddedFile = new File(mCameraRollObservingPath, fileName);
+                if (!FileUtil.getFileExtName(newAddedFile).equalsIgnoreCase("jpg")) return;
+                mNewAddedImageFiles.add(newAddedFile);
+                LLog.d("Detected a image file captured by camera", fileName);
+            }
+        };
+        mCameraRollObserver.startWatching();
     }
 
 }
