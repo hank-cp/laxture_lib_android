@@ -3,7 +3,6 @@ package com.laxture.lib.util;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.location.Location;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.FileObserver;
@@ -28,7 +27,6 @@ public class CameraLauncher {
     private static final String QUALITY = "Quality";
     private Activity mActivity;
     private Fragment mFragment;
-    private int mResultCode;
     private CameraLauncherListener mCameraLauncherListener;
 
     public File mPhotoFile;
@@ -101,7 +99,6 @@ public class CameraLauncher {
     public CameraLauncher(Activity activity, int resultCode,
             CameraLauncherListener listener) {
         mActivity = activity;
-        mResultCode = resultCode;
         mCameraLauncherListener = listener;
     }
 
@@ -109,24 +106,23 @@ public class CameraLauncher {
             CameraLauncherListener listener) {
         mFragment = fragment;
         mActivity = fragment.getActivity();
-        mResultCode = resultCode;
         mCameraLauncherListener = listener;
     }
 
-    public void launchCamera() {
-        launchCamera(null, null);
+    public void launchCamera(int resultCode) {
+        launchCamera(null, resultCode);
     }
 
-    public void launchCamera(Intent cameraIntent, Location location) {
+    public void launchCamera(Intent cameraIntent, int resultCode) {
         mOutputFile = null;
         mPhotoFile = IntentUtil.getOutputImageFile();
         if (cameraIntent == null) cameraIntent = IntentUtil.getCameraIntent(mPhotoFile, 0);
 
         startCameraRollWatching();
         if (mFragment != null) {
-            IntentUtil.startActivityWrapper(mFragment, cameraIntent, mResultCode);
+            IntentUtil.startActivityWrapper(mFragment, cameraIntent, resultCode);
         } else {
-            IntentUtil.startActivityWrapper(mActivity, cameraIntent, mResultCode);
+            IntentUtil.startActivityWrapper(mActivity, cameraIntent, resultCode);
         }
     }
 
