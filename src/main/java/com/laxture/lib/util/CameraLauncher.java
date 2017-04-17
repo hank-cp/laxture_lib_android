@@ -120,13 +120,13 @@ public class CameraLauncher {
     }
 
     public void onCameraCancel() {
-        mCameraRollObserver.stopWatching();
+        if (mCameraRollObserver != null) mCameraRollObserver.stopWatching();
         mNewAddedImageFiles.clear();
         if (Checker.isExistedFile(mPhotoFile)) mPhotoFile.delete();
     }
 
     public File onCameraReturn() {
-        mCameraRollObserver.stopWatching();
+        if (mCameraRollObserver != null) mCameraRollObserver.stopWatching();
         if (Checker.isEmpty(mPhotoFile)) {
             LLog.w("Cannot found captured image file, try to load from new added files (size=%s).",
                     mNewAddedImageFiles.size());
