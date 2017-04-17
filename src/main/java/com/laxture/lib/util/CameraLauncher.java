@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
 import com.laxture.lib.R;
-import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.cache.men.BitmapCache;
 
 import java.io.File;
@@ -47,16 +46,10 @@ public class CameraLauncher {
     public void setWidthLimit(int widthLimit) {
         mWidthLimit = widthLimit;
     }
-    public int getWidthLimit() {
-        return mWidthLimit > 0 ? mWidthLimit : RuntimeContext.getConfig().getMaxCaptureImageSize();
-    }
 
     private int mHeightLimit;
     public void setHeightLimit(int heightLimit) {
         mHeightLimit = heightLimit;
-    }
-    public int getHeightLimit() {
-        return mHeightLimit > 0 ? mHeightLimit : RuntimeContext.getConfig().getMaxCaptureImageSize();
     }
 
     private int mQuality;
@@ -154,7 +147,7 @@ public class CameraLauncher {
         }
 
         // copy a scaled image to home dir.
-        if (mOutputFile != null && getWidthLimit() > 0 && getHeightLimit() > 0) {
+        if (mOutputFile != null && mWidthLimit > 0 && mHeightLimit > 0) {
             compressImageFile(mOutputFile, mPhotoFile);
             mCameraLauncherListener.onImageReady(mOutputFile);
             return mOutputFile;
@@ -182,13 +175,13 @@ public class CameraLauncher {
     public File compressImageFile(File outputFile,
                                   @NonNull File inputFile) {
         BitmapUtil.Size imageSize = BitmapUtil.getImageSizeFromFile(inputFile);
-        if (imageSize.width > getWidthLimit() || imageSize.height > getHeightLimit()) {
+        if (imageSize.width > mWidthLimit || imageSize.height > mHeightLimit) {
 
-            BitmapCache.prepareMemoryBeforeLoadBitmap(getWidthLimit(), getHeightLimit());
+            BitmapCache.prepareMemoryBeforeLoadBitmap(mWidthLimit, mHeightLimit);
 
             // resize image to limit size
             Bitmap documentedBitmap = BitmapUtil.loadBitmapFromFile(
-                    inputFile, getWidthLimit(), getHeightLimit(),
+                    inputFile, mWidthLimit, mHeightLimit,
                     BitmapUtil.ResizeMode.Fit);
             if (documentedBitmap == null) {
                 LLog.e("Failed to read captured photo data.");
