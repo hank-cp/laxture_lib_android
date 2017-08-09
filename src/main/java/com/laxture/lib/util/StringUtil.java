@@ -3,6 +3,7 @@ package com.laxture.lib.util;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collection;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -26,6 +27,16 @@ public class StringUtil {
         if (Checker.isEmpty(rs)) return "";
         if (rs.length() <= length) return rs;
         return rs.substring(0, length)+ELIPSE_CHARACTOR;
+    }
+
+    public static String join(Collection<String> stringList) {
+        if (Checker.isEmpty(stringList)) return "";
+        StringBuilder sb = new StringBuilder();
+        for (String str : stringList) {
+            sb.append(str).append(",");
+        }
+        if (sb.length() > 0) sb.delete(sb.length()-1, sb.length());
+        return sb.toString();
     }
 
     public static boolean isChinese(char c) {
