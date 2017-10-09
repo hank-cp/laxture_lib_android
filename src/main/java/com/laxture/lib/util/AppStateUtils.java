@@ -137,7 +137,7 @@ public class AppStateUtils {
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
     }
 
-    static class ExceptionHandler implements UncaughtExceptionHandler {
+    private static class ExceptionHandler implements UncaughtExceptionHandler {
         @Override
         public void uncaughtException(Thread thread, Throwable ex) {
             AppStateUtils.setAppToBackground(true);
@@ -150,4 +150,6 @@ public class AppStateUtils {
     public interface OnAppSendToBackgroundCallback {
         void onAppSendToBackground();
     }
+
+
 }
