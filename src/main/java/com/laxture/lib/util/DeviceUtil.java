@@ -1,8 +1,10 @@
 package com.laxture.lib.util;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Debug;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -26,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.UUID;
 import java.util.regex.Pattern;
+
+import static android.content.Context.ACTIVITY_SERVICE;
 
 public class DeviceUtil {
 
@@ -267,4 +271,5 @@ public class DeviceUtil {
             return 1;
         }
     }
+
 }
