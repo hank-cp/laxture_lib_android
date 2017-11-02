@@ -45,8 +45,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'joda-time:joda-time:2.7'
+    compile 'joda-time:joda-time:2.9.4'
     compile "com.android.support:support-v4:$android_supportVersion"
     compile('org.apache.httpcomponents:httpmime:4.1.1') {
         exclude module: "commons-logging"
