@@ -57,7 +57,7 @@ public class LLog {
         if (LEVEL <= Log.VERBOSE) {
             DebugMeta debugMeta = formetMsg(msg, args);
             if (enableLogCat) Log.v(debugMeta.tag, debugMeta.msg);
-            if (null != sLogUploader) sLogUploader.onLog(Log.VERBOSE, debugMeta.tag, debugMeta.msg, null);
+            if (null != sByPassLogger) sByPassLogger.onLog(Log.VERBOSE, debugMeta.tag, debugMeta.msg, null);
         }
     }
 
@@ -65,7 +65,7 @@ public class LLog {
         if (LEVEL <= Log.VERBOSE) {
             DebugMeta debugMeta = formetMsg(msg, args);
             if (enableLogCat) Log.v(debugMeta.tag, debugMeta.msg, t);
-            if (null != sLogUploader) sLogUploader.onLog(Log.VERBOSE, debugMeta.tag, debugMeta.msg, t);
+            if (null != sByPassLogger) sByPassLogger.onLog(Log.VERBOSE, debugMeta.tag, debugMeta.msg, t);
         }
     }
 
@@ -73,7 +73,7 @@ public class LLog {
         if (LEVEL <= Log.DEBUG) {
             DebugMeta debugMeta = formetMsg(msg, args);
             if (enableLogCat) Log.d(debugMeta.tag, debugMeta.msg);
-            if (null != sLogUploader) sLogUploader.onLog(Log.DEBUG, debugMeta.tag, debugMeta.msg, null);
+            if (null != sByPassLogger) sByPassLogger.onLog(Log.DEBUG, debugMeta.tag, debugMeta.msg, null);
         }
     }
 
@@ -81,7 +81,7 @@ public class LLog {
         if (LEVEL <= Log.DEBUG) {
             DebugMeta debugMeta = formetMsg(msg, args);
             if (enableLogCat) Log.d(debugMeta.tag, debugMeta.msg, t);
-            if (null != sLogUploader) sLogUploader.onLog(Log.DEBUG, debugMeta.tag, debugMeta.msg, t);
+            if (null != sByPassLogger) sByPassLogger.onLog(Log.DEBUG, debugMeta.tag, debugMeta.msg, t);
         }
     }
 
@@ -89,7 +89,7 @@ public class LLog {
         DebugMeta debugMeta = formetMsg(msg, args);
         if (LEVEL <= Log.INFO) {
             if (enableLogCat) Log.i(debugMeta.tag, debugMeta.msg);
-            if (null != sLogUploader) sLogUploader.onLog(Log.INFO, debugMeta.tag, debugMeta.msg, null);
+            if (null != sByPassLogger) sByPassLogger.onLog(Log.INFO, debugMeta.tag, debugMeta.msg, null);
         }
     }
 
@@ -97,7 +97,7 @@ public class LLog {
         DebugMeta debugMeta = formetMsg(msg, args);
         if (LEVEL <= Log.INFO) {
             if (enableLogCat) Log.i(debugMeta.tag, debugMeta.msg, t);
-            if (null != sLogUploader) sLogUploader.onLog(Log.INFO, debugMeta.tag, debugMeta.msg, t);
+            if (null != sByPassLogger) sByPassLogger.onLog(Log.INFO, debugMeta.tag, debugMeta.msg, t);
         }
     }
 
@@ -105,7 +105,7 @@ public class LLog {
         DebugMeta debugMeta = formetMsg(msg, args);
         if (LEVEL <= Log.WARN) {
             if (enableLogCat) Log.w(debugMeta.tag, debugMeta.msg);
-            if (null != sLogUploader) sLogUploader.onLog(Log.WARN, debugMeta.tag, debugMeta.msg, null);
+            if (null != sByPassLogger) sByPassLogger.onLog(Log.WARN, debugMeta.tag, debugMeta.msg, null);
         }
     }
 
@@ -113,7 +113,7 @@ public class LLog {
         DebugMeta debugMeta = formetMsg(msg, args);
         if (LEVEL <= Log.WARN) {
             if (enableLogCat) Log.w(debugMeta.tag, debugMeta.msg, t);
-            if (null != sLogUploader) sLogUploader.onLog(Log.WARN, debugMeta.tag, debugMeta.msg, t);
+            if (null != sByPassLogger) sByPassLogger.onLog(Log.WARN, debugMeta.tag, debugMeta.msg, t);
         }
     }
 
@@ -121,7 +121,7 @@ public class LLog {
         DebugMeta debugMeta = formetMsg(msg, args);
         if (LEVEL <= Log.ERROR) {
             if (enableLogCat) Log.e(debugMeta.tag, debugMeta.msg);
-            if (null != sLogUploader) sLogUploader.onLog(Log.ERROR, debugMeta.tag, debugMeta.msg, null);
+            if (null != sByPassLogger) sByPassLogger.onLog(Log.ERROR, debugMeta.tag, debugMeta.msg, null);
         }
     }
 
@@ -129,22 +129,21 @@ public class LLog {
         DebugMeta debugMeta = formetMsg(msg, args);
         if (LEVEL <= Log.ERROR) {
             if (enableLogCat) Log.e(debugMeta.tag, debugMeta.msg, t);
-            if (null != sLogUploader) sLogUploader.onLog(Log.ERROR, debugMeta.tag, debugMeta.msg, t);
+            if (null != sByPassLogger) sByPassLogger.onLog(Log.ERROR, debugMeta.tag, debugMeta.msg, t);
         }
     }
 
-    public interface LogUploader {
-        public void onLog(int level, String tag, String msg, Throwable t);
-        public void uploadLog(int level);
+    public interface ByPassLogger {
+        void onLog(int level, String tag, String msg, Throwable t);
     }
 
-    private static LogUploader sLogUploader;
+    private static ByPassLogger sByPassLogger;
 
-    public synchronized static void setLogUploader(LogUploader uploader) {
-        sLogUploader = uploader;
+    public synchronized static void setByPassLogger(ByPassLogger logger) {
+        sByPassLogger = logger;
     }
 
-    public synchronized static LogUploader getLogUploader() {
-        return sLogUploader;
+    public synchronized static ByPassLogger getByPassLogger() {
+        return sByPassLogger;
     }
 }
