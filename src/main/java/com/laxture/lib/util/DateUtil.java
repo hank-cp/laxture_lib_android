@@ -31,7 +31,7 @@ public class DateUtil {
     public final static String DATE_FORMAT_WITH_BAR="yyyy-MM-dd";
 
     private static final SimpleDateFormat J_DATA_TIME_FORMATTER =
-            new SimpleDateFormat(DEFAULT_DATE_FORMAT);
+            new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
     private static final SimpleDateFormat J_DATA_FORMATTER =
             new SimpleDateFormat(DEFAULT_DATE_FORMAT);
     private static final SimpleDateFormat J_TIME_FORMATTER =
