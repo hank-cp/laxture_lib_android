@@ -231,7 +231,10 @@ public class FileUtil {
 
     public static void deleteFolder(File dir, String skipFilePattern) {
         if (!Checker.isExistedFile(dir)) return;
-        if (!dir.isDirectory()) throw new IllegalArgumentException();
+        if (!dir.isDirectory()) {
+            dir.delete();
+            return;
+        }
 
         File[] fileArray = dir.listFiles();
         if (fileArray != null) {
