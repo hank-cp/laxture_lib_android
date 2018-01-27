@@ -22,7 +22,7 @@ import java.util.Map;
 
 public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
 
-    private static final boolean DEBUG = true;
+    public static boolean DEBUG = true;
 
     int retries;
 
