@@ -4,12 +4,17 @@ import android.util.Log;
 
 import com.laxture.lib.BuildConfig;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Wrapper of {@link Log}
  */
 public class LLog {
 
     public static boolean enableLogCat = BuildConfig.DEBUG;
+
+    public static final int TOP_STACK = 5;
 
     public static int LEVEL = Log.VERBOSE;
 
@@ -51,6 +56,27 @@ public class LLog {
                 !Checker.isEmpty(args) ? String.format(msg, args) : msg);
         } catch (Exception e) {}
         return new DebugMeta(callerClassName, formattedMsg);
+    }
+
+    public static List<StackTraceElement> getTopStackTraceElement(Throwable cause, String filterPackageName) {
+        List<StackTraceElement> topStack = new ArrayList<>(TOP_STACK);
+        for (StackTraceElement stackTraceElement : cause.getStackTrace()) {
+            if (stackTraceElement.getLineNumber() <= 0
+                    || !stackTraceElement.getClassName().startsWith(filterPackageName)) continue;
+            topStack.add(stackTraceElement);
+            if (topStack.size() >= 5) break;
+        }
+        return topStack;
+    }
+
+    public static String summaryTopStack(Throwable cause, String filterPackageName) {
+        List<StackTraceElement> stack = getTopStackTraceElement(cause, filterPackageName);
+        StringBuilder sb = new StringBuilder();
+        for (int i=0; i<stack.size(); i++) {
+            sb.append(String.format("%s:%s(%s)", stack.get(i).getClassName(), stack.get(i).getMethodName(), stack.get(i).getLineNumber()));
+            if (i != stack.size()-1) sb.append("\n");
+        }
+        return sb.toString();
     }
 
     public static void v(String msg, Object... args) {
