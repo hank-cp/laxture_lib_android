@@ -19,7 +19,7 @@ public class CompressionHelper {
      * @param zipFile
      * @param targetLocation
      */
-    public static String[] extractZipFile(File zipFile, String targetLocation) {
+    public static String[] extractZipFile(File zipFile, String targetLocation) throws IOException {
         if (Checker.isEmpty(zipFile) || zipFile.isDirectory()) {
             LLog.w("invalid zip file");
             return null;
@@ -56,13 +56,12 @@ public class CompressionHelper {
 
         } catch (IOException ex) {
             LLog.e("Extract zip file %s failed.", ex, zipFile);
+            throw ex;
 
         } finally {
             StreamUtil.closeStream(os);
             StreamUtil.closeStream(zis);
         }
-
-        return null;
     }
 
 }
