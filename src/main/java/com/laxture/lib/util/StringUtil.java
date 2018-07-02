@@ -29,11 +29,11 @@ public class StringUtil {
         return rs.substring(0, length)+ELIPSE_CHARACTOR;
     }
 
-    public static String join(Collection<String> stringList) {
+    public static String join(Collection<?> stringList) {
         if (Checker.isEmpty(stringList)) return "";
         StringBuilder sb = new StringBuilder();
-        for (String str : stringList) {
-            sb.append(str).append(",");
+        for (Object str : stringList) {
+            sb.append(str.toString()).append(",");
         }
         if (sb.length() > 0) sb.delete(sb.length()-1, sb.length());
         return sb.toString();
