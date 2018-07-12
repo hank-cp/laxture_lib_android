@@ -64,6 +64,14 @@ public class HttpTaskException extends TaskException {
             return RuntimeContext.getString(
                     R.string.msg_http_err_network_not_available);
 
+        case 400: // bad request
+            return RuntimeContext.getString(
+                    R.string.msg_http_bad_request);
+
+        case 401:// Auth failed
+            return RuntimeContext.getString(
+                    R.string.msg_http_auth_failed);
+
         default:
             // status code errors, e.g. 404, 403, 500
             return errorCode != 0 ?

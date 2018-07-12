@@ -30,6 +30,8 @@
     <string name="msg_http_err_network_not_available">无网络</string>
     <string name="msg_http_err_connection_error">网络不给力</string>
     <string name="msg_http_err_connection_time_out">网络不给力</string>
+    <string name="msg_http_auth_failed">登录失败</string>
+    <string name="msg_http_bad_request">请求参数错误</string>
     <string name="msg_http_err_server_error">连接异常，请稍候重试</string>
     <string name="msg_http_err_download_error">下载失败，请稍候重试</string>
     <string name="msg_http_err_save_download_error">下载失败，磁盘空间不足</string>
