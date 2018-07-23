@@ -86,4 +86,11 @@ public final class Checker {
         return json == null || json.length() == 0;
     }
 
+    public static boolean isTrue(Boolean bool) {
+        return bool != null && bool;
+    }
+
+    public static boolean isTrue(Optional<Boolean> bool) {
+        return bool != null && bool.isPresent() && bool.get();
+    }
 }

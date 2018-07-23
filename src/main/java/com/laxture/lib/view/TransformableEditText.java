@@ -31,6 +31,11 @@ public class TransformableEditText extends EditText {
     private Drawable mIcon;
     private OnClickListener mClickListener;
 
+    public TransformableEditText(Context context) {
+        super(context);
+        init();
+    }
+
     public TransformableEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -39,6 +44,10 @@ public class TransformableEditText extends EditText {
         mExploitable = a.getBoolean(R.styleable.TransformableEditText_exploitable, false);
         a.recycle();
 
+        init();
+    }
+
+    public void init() {
         mBackgroundDrawable = getBackground();
         mHint = getHint();
         mKeyListener = getKeyListener();

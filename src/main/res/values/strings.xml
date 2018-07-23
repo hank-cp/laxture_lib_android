@@ -21,6 +21,7 @@
     <string name="label_send">发送</string>
     <string name="label_close">关闭</string>
     <string name="label_open">开启</string>
+    <string name="label_required">必填</string>
 
     <string name="msg_cannotFoundPhoto">添加照片失败，请从相册中选择</string>
     <string name="msg_notSupportOperation">无法完成操作</string>
