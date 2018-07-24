@@ -26,9 +26,7 @@ import com.laxture.lib.RuntimeContext;
 import java.io.File;
 import java.lang.reflect.Method;
 
-public final class ViewUtil {
-
-    private ViewUtil() {} // Hide Constructor.
+public class ViewUtil {
 
     public static final ViewGroup.LayoutParams DEFAULT_LAYOUT_PARAM =
             new ViewGroup.LayoutParams(
