@@ -64,4 +64,10 @@ public class NumberUtil {
         return 0;
     }
 
+    public static boolean isSameDouble(Double a, Double b) {
+        if (a == null && b == null) return true;
+        if (a == null || b == null) return false;
+        return Math.abs(a - b) < 1.0E-6;
+    }
+
 }
