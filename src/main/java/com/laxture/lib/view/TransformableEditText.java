@@ -94,4 +94,7 @@ public class TransformableEditText extends EditText {
         }
     }
 
+    public boolean isReadOnly() {
+        return mReadonly;
+    }
 }
