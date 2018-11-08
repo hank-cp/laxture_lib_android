@@ -188,8 +188,6 @@ public class DeviceUtil {
      * Dump logs to String.
      *
      * @param tags Tags to filter
-     * @param size unit is KB
-     * @return
      */
     public static String dumpLogToText(String[] tags) {
         // ref: http://developer.android.com/guide/developing/debugging/debugging-log.html
