@@ -4,15 +4,18 @@ import java.text.DecimalFormat;
 
 public class NumberUtil {
 
-    public static String format(int num, String pattern) {
+    public static String format(Integer num, String pattern) {
+        if (num == null) return "";
         return new DecimalFormat(pattern).format(num);
     }
 
-    public static String format(long num, String pattern) {
+    public static String format(Long num, String pattern) {
+        if (num == null) return "";
         return new DecimalFormat(pattern).format(num);
     }
 
-    public static String format(double num, String pattern) {
+    public static String format(Double num, String pattern) {
+        if (num == null) return "";
         return new DecimalFormat(pattern).format(num);
     }
 
