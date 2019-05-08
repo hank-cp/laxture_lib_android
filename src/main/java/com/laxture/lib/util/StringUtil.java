@@ -1,14 +1,14 @@
 package com.laxture.lib.util;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Collection;
+import android.text.TextUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.text.TextUtils;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Collection;
 
 public class StringUtil {
 
@@ -29,11 +29,11 @@ public class StringUtil {
         return rs.substring(0, length)+ELIPSE_CHARACTOR;
     }
 
-    public static String join(Collection<?> stringList) {
+    public static String join(Collection<?> stringList, String joiner) {
         if (Checker.isEmpty(stringList)) return "";
         StringBuilder sb = new StringBuilder();
         for (Object str : stringList) {
-            sb.append(str.toString()).append(",");
+            sb.append(str.toString()).append(joiner);
         }
         if (sb.length() > 0) sb.delete(sb.length()-1, sb.length());
         return sb.toString();
