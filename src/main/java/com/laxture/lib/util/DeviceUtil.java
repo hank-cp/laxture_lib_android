@@ -2,15 +2,13 @@ package com.laxture.lib.util;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Debug;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
+import androidx.core.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Pair;
@@ -31,8 +29,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.UUID;
 import java.util.regex.Pattern;
-
-import static android.content.Context.ACTIVITY_SERVICE;
 
 public class DeviceUtil {
 

@@ -1,6 +1,6 @@
 package com.laxture.lib.view.gif;
 
-import android.support.v4.util.LruCache;
+import androidx.collection.LruCache;
 
 public class GifLruCache extends LruCache<String, GifDecoder> {
 

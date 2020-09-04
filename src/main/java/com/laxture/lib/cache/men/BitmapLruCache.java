@@ -1,7 +1,7 @@
 package com.laxture.lib.cache.men;
 
 import android.graphics.Bitmap;
-import android.support.v4.util.LruCache;
+import androidx.collection.LruCache;
 
 import com.laxture.lib.util.BitmapUtil;
 import com.laxture.lib.util.DeviceUtil;

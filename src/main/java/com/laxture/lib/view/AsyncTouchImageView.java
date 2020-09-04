@@ -3,7 +3,7 @@ package com.laxture.lib.view;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.util.AttributeSet;
 import android.widget.ProgressBar;
 
