@@ -8,19 +8,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.ContactsContract.Contacts;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import androidx.fragment.app.Fragment;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
-import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.R;
+import com.laxture.lib.RuntimeContext;
 
 import java.io.File;
 import java.util.Date;
+
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
 
 public class IntentUtil {
 
@@ -214,7 +217,15 @@ public class IntentUtil {
 
     public static Intent getApkInstallerIntent(File apkFile) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(apkFile), DATA_TYPE_APK_INSTALLER);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            intent.setDataAndType(Uri.fromFile(apkFile), DATA_TYPE_APK_INSTALLER);
+        } else {
+            intent.setDataAndType(FileProvider.getUriForFile(
+                    RuntimeContext.getApplication(),
+                    RuntimeContext.getPackageName()+".fileProvider",
+                    apkFile), DATA_TYPE_APK_INSTALLER);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
         return intent;
     }
 
