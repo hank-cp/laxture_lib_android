@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import androidx.fragment.app.Fragment;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.view.MotionEvent;
@@ -25,6 +24,8 @@ import com.laxture.lib.RuntimeContext;
 
 import java.io.File;
 import java.lang.reflect.Method;
+
+import androidx.fragment.app.Fragment;
 
 public class ViewUtil {
 
@@ -64,6 +65,27 @@ public class ViewUtil {
 
     /**
      * Convenient method to retrieve value from TextView.
+     */
+    public static String getViewText(TextView textView, String defaultValue) {
+        if (Checker.isEmpty(textView.getText())) return defaultValue;
+        return textView.getText().toString();
+    }
+
+
+    public static Double getViewTextAsDouble(TextView textView) {
+        String text = getViewText(textView, null);
+        if (text == null) return null;
+        return Double.parseDouble(text);
+    }
+
+    public static Integer getViewTextAsInt(TextView textView) {
+        String text = getViewText(textView, null);
+        if (text == null) return null;
+        return Integer.parseInt(text);
+    }
+
+    /**
+     * Convenient method to retrieve value from TextView.
      *
      * @param viewId the assigned view must be inherited from TextView
      * @param rootView accept any Object has <code>findViewById()</code> method.
@@ -72,9 +94,9 @@ public class ViewUtil {
     public static String getViewText(int viewId, Object rootView) {
         try {
             TextView view = resolveTextView(viewId, rootView);
-            return view.getText().toString();
+            return getViewText(view, null);
         } catch (Exception e) {
-            return "";
+            return null;
         }
     }
 
