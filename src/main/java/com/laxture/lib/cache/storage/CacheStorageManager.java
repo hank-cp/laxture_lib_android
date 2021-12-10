@@ -135,13 +135,15 @@ public class CacheStorageManager extends Thread {
                     break;
 
                 case MESSAGE_UPDATE_CACHE_IN_BATCH:
-                    CacheDBHelper.getInstance().getWritableDatabase().beginTransaction();
-                    for (CacheStorage item : sUpdatedPool.values()) {
-                        item.saveToDB();
+                    synchronized (sUpdatedPool) {
+                        CacheDBHelper.getInstance().getWritableDatabase().beginTransaction();
+                        for (CacheStorage item : sUpdatedPool.values()) {
+                            item.saveToDB();
+                        }
+                        CacheDBHelper.getInstance().getWritableDatabase().setTransactionSuccessful();
+                        CacheDBHelper.getInstance().getWritableDatabase().endTransaction();
+                        sUpdatedPool.clear();
                     }
-                    CacheDBHelper.getInstance().getWritableDatabase().setTransactionSuccessful();
-                    CacheDBHelper.getInstance().getWritableDatabase().endTransaction();
-                    sUpdatedPool.clear();
                     break;
 
                 case MESSAGE_RECYCLE_CACHE_FILE:
