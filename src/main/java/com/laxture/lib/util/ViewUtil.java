@@ -29,11 +29,17 @@ import androidx.fragment.app.Fragment;
 
 public class ViewUtil {
 
-    public static final ViewGroup.LayoutParams DEFAULT_LAYOUT_PARAM =
+    public static final ViewGroup.LayoutParams VERTICAL_LAYOUT_PARAM =
             new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
             );
+
+    public static final ViewGroup.LayoutParams HORIZONTAL_LAYOUT_PARAM =
+        new ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        );
 
     public static final ViewGroup.LayoutParams FILL_LAYOUT_PARAM =
             new ViewGroup.LayoutParams(
