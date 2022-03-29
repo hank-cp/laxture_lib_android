@@ -145,6 +145,11 @@ public class CollectionUtil {
     // Collections Utils
     //*************************************************************************
 
+    public static <T> T any(Collection<T> list) {
+        if (Checker.isEmpty(list)) return null;
+        return list.iterator().next();
+    }
+
     public static <T> boolean contains(Collection<T> list, Predicate<T> func) {
         if (Checker.isEmpty(list)) return false;
         for (T item : list) {
