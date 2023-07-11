@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Debug;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -37,7 +38,12 @@ public class DeviceUtil {
                 Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
             return "unknown_device";
         }
-        return ((TelephonyManager) RuntimeContext.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            return Settings.Secure.getString(
+                RuntimeContext.getApplication().getContentResolver(), Settings.Secure.ANDROID_ID);
+        } else {
+            return ((TelephonyManager) RuntimeContext.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
+        }
     }
 
     /**
