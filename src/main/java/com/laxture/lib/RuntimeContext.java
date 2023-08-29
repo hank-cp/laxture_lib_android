@@ -44,10 +44,6 @@ public class RuntimeContext {
 
     /**
      * This method should be called in {@link Application#onCreate()}
-     *
-     * @param application
-     * @param config
-     * @return
      */
     public static void init(Application application, RuntimeConfig config) {
         try {
@@ -70,7 +66,7 @@ public class RuntimeContext {
 
             LLog.i("InstallChannel=" + instance.mChannelName + "(" + instance.mChannelCode + ")");
 
-            instance.mStorageHomeDir = new File(Environment.getExternalStorageDirectory(),
+            instance.mStorageHomeDir = new File(application.getExternalCacheDir(),
                     instance.mConfig.getStorageHomeName());
             if(instance.mConfig.isNoMedia()) {
                 // to prevent scan by MediaScanner
