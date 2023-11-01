@@ -18,22 +18,26 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
 
-public class HttpUploadTask extends HttpSimpleTask {
+public abstract class HttpUploadTask<Result> extends HttpTask<Result> {
 
     private File mUploadFile;
 
     public HttpUploadTask(String url, File file) {
         super(url);
         mUploadFile = file;
+        this.init();
     }
 
     public HttpUploadTask(String url, File file, HttpTaskConfig config) {
         super(url, config);
         mUploadFile = file;
+        this.init();
     }
 
+    public abstract void init();
+
     @Override
-    public String run() {
+    public Result run() {
         if (Checker.isEmpty(mUploadFile)) {
             setErrorDetails(new TaskException(
                     HttpTaskException.HTTP_ERR_CODE_INVALID_UPLOAD_FILE,
@@ -80,15 +84,8 @@ public class HttpUploadTask extends HttpSimpleTask {
 
     public class CountingMultipartEntity extends MultipartEntity {
 
-        public CountingMultipartEntity(HttpMultipartMode mode, String boundary, Charset charset) {
-            super(mode, boundary, charset);
-        }
-
         public CountingMultipartEntity(HttpMultipartMode mode) {
-            super(mode);
-        }
-
-        public CountingMultipartEntity() {
+            super(mode, null, Charset.forName("UTF-8"));
         }
 
         @Override
