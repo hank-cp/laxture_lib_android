@@ -15,10 +15,18 @@ import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.X509TrustManager;
 
 public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
 
@@ -149,6 +157,31 @@ public abstract class HttpTask<Result> extends AbstractAsyncTask<Result> {
     //*************************************************************************
     // Http Callback
     //*************************************************************************
+
+    private static void trustEveryone() {
+        try {
+            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+                public boolean verify(String hostname, SSLSession session) {
+                    return true;
+                }});
+            SSLContext context = SSLContext.getInstance("TLS");
+            context.init(null, new X509TrustManager[]{new X509TrustManager() {
+                public void checkClientTrusted(X509Certificate[] chain,
+                                               String authType) {}
+                public void checkServerTrusted(X509Certificate[] chain,
+                                               String authType) {}
+                public X509Certificate[] getAcceptedIssuers() {
+                    return new X509Certificate[0];
+                }}}, new SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(
+                context.getSocketFactory());
+        } catch (Exception ignored) {
+            ignored.printStackTrace();
+        } // should never happen
+    }
+    static {
+        trustEveryone();
+    }
 
     protected HttpURLConnection createConnection(String url) throws IOException {
         String encodedUrl = Uri.encode(url, config.allowedUriChars);
